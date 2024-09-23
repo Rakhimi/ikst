@@ -95,7 +95,7 @@ const LoginModal = () => {
           <Button type='submit'>Login Now</Button>
           <div className='font-semibold'>
               <h2>
-                Doesn't have an account?{' '}
+                Doesn&apos;t have an account?{' '}
                 <span
                   onClick={() => {
                     closeLoginModal();

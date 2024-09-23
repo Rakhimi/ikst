@@ -6,7 +6,6 @@ import { toast } from "react-hot-toast";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -36,7 +35,6 @@ const RegisterExam = () => {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
   } = useForm<FormFields>();
 
   const router = useRouter()
@@ -56,7 +54,7 @@ const RegisterExam = () => {
         throw new Error('Registration failed');
       }
   
-      const result = await response.json();
+      await response.json();
       toast.success('Registration successful');
 
       router.push('/admin');
@@ -76,7 +74,7 @@ const RegisterExam = () => {
             </CardHeader>
             <CardContent>
               <div className='mb-8'>
-                <Label>Student's Name</Label>
+                <Label>Student&apos;s Name</Label>
                 <Input
                   placeholder='Name'
                   {...register('name', { required: 'Name is required' })}
