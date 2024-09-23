@@ -32,8 +32,10 @@ const RegisterModal = () => {
   };
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
+
+
     const { confirmPassword, ...submitData } = data; // Exclude confirmPassword
-  
+    console.log(confirmPassword)
     console.log(submitData);
   
     try {

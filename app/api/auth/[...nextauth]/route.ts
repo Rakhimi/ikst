@@ -4,14 +4,14 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import prisma from '@/lib/prismadb';
 import bcrypt from 'bcrypt';
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'credentials',
       credentials: {
-        email: { label: 'email', type: 'text' },
-        password: { label: 'password', type: 'password' }
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -37,7 +37,10 @@ export const authOptions: AuthOptions = {
           throw new Error('Invalid credentials');
         }
 
-        return user as any;
+        return {
+          ...user,
+          id: user.id.toString(), // Ensure id is returned as a string
+        } // Cast to User type
       }
     })
   ],
@@ -47,7 +50,6 @@ export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET
 };
 
-const handler = NextAuth(authOptions)
+const handler = NextAuth(authOptions);
 
-// Named export for the POST method
-export { handler as GET, handler as POST }
+export { handler as GET, handler as POST, authOptions }

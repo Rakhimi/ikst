@@ -1,12 +1,14 @@
-import * as React from "react"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
-
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+// Add at least one custom property to avoid the empty interface warning
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  customProp?: string; // Example custom prop
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ({ className, type, customProp, ...props }, ref) => {
     return (
       <input
         type={type}
@@ -15,11 +17,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className
         )}
         ref={ref}
-        {...props}
+        {...props} // Apply the rest of the props
       />
-    )
+    );
   }
-)
-Input.displayName = "Input"
+);
+Input.displayName = "Input";
 
-export { Input }
+export { Input };

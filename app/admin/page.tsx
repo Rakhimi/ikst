@@ -3,20 +3,6 @@ import getListing from '../actions/getListings'; // Ensure this path is correct
 import MaxWidthWrapper from "@/components/MadWidthWrapper";
 import Nav from "@/components/Navbar/Nav";
 
-type Profile = {
-  id: number;
-  name: string;
-  school: string;
-  grade: string;
-};
-
-type User = {
-  id: number;
-  email: string;
-  createdAt: string;
-  profile: Profile | null;
-};
-
 const Page = async () => {
   const users = await getListing();
 
