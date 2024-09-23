@@ -3,8 +3,20 @@ import getListing from '../actions/getListings'; // Ensure this path is correct
 import MaxWidthWrapper from "@/components/MadWidthWrapper";
 import Nav from "@/components/Navbar/Nav";
 
+type User = {
+  id: number;
+  email: string;
+  profile: {
+    name: string;
+    school: string;
+    grade: string;
+  } | null;
+  createdAt: string; // Ensure this type matches your actual data
+};
+
 const Page = async () => {
-  const users = await getListing();
+  // Type assertion to ensure TypeScript recognizes the type
+  const users: User[] = await getListing() as User[];
 
   return (
     <div>

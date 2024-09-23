@@ -25,12 +25,12 @@ export default async function getListing() {
     const safeUsers = usersWithProfiles.map((user) => ({
       ...user,
       createdAt: user.createdAt.toString(),
-      profile: user.profile || null, // Set profile to null if not available
+      profile: user.profile || null, 
     }));
 
     return safeUsers;
   } catch (error) {
     console.error('Error fetching users:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' });
   }
 }
