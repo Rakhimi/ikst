@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../api/auth/[...nextauth]/route";
-import prisma from "@/lib/prismadb"
+import prisma from "@/lib/prismadb";
+import { NextResponse } from "next/server";
 
 export async function getSession() {
   return await getServerSession(authOptions)
@@ -30,7 +31,7 @@ export default async function getCurrentUser() {
       createdAt: currentUser.createdAt.toISOString(),
       updatedAt: currentUser.updatedAt.toISOString(),
     };
-  } catch (error) {
-    return null;
+  } catch (error:any) {
+    throw new Error(error.message || 'Error fetching users');
   }
 }

@@ -1,5 +1,6 @@
 import prisma from "@/lib/prismadb";
 import getCurrentUser from "./getCurrentUser";
+import { NextResponse } from "next/server";
 
 export default async function getListing() {
   try {
@@ -28,7 +29,7 @@ export default async function getListing() {
     }));
 
     return safeUsers;
-  } catch (error) {
-    throw new Error();
+  } catch (error:any) {
+    throw new Error(error.message || 'Error fetching users');
   }
 }
