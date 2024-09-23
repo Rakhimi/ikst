@@ -1,19 +1,29 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prismadb";
-import { authOptions } from "@/lib/authOptions";
+import getCurrentUser from "@/app/actions/getCurrentUser";
 
-// Function to get the session
-export async function getSession() {
-  return await getServerSession(authOptions);
-}
+// Define the type for the profile object
+type Profile = {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  school: string;
+  grade: string;
+  userId: number;
+};
 
-// Function to handle POST requests
 export async function POST(request: Request) {
   try {
     // Parse the request body
     const body = await request.json();
     const { name, school, grade } = body;
+
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // Validate the input data
     if (!name || typeof name !== 'string' || name.trim() === '') {
@@ -26,47 +36,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid grade' }, { status: 400 });
     }
 
-    // Get the session
-    const session = await getSession();
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Find the current user by their email
-    const currentUser = await prisma.user.findUnique({
-      where: {
-        email: session.user.email as string,
-      }
-    });
-
-    if (!currentUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
     // Use a transaction to create a profile and update the user
-    const [profile] = await prisma.$transaction(async (prisma) => {
-      const newProfile = await prisma.profile.create({
+    const newProfile = await prisma.$transaction(async (prisma) => {
+      const profile = await prisma.profile.create({
         data: {
           name,
           school,
           grade,
-          userId: currentUser.id,  // Link the profile to the authenticated user
+          userId: currentUser.id,
         },
       });
 
       await prisma.user.update({
         where: { id: currentUser.id },
-        data: { profileId: newProfile.id }, // Set the profileId to link to the existing profile
+        data: { profileId: profile.id },
       });
 
-      return [newProfile];
+      return profile;
     });
 
     // Return the created profile
-    return NextResponse.json(profile);
+    return NextResponse.json(newProfile as Profile); // Ensure TypeScript knows the returned type
   } catch (error) {
     // Handle any errors that occur
     console.error('Error creating profile:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.error();
   }
 }

@@ -1,7 +1,6 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/authOptions";
 import prisma from "@/lib/prismadb";
-import { NextResponse } from "next/server";
 
 export async function getSession() {
   return await getServerSession(authOptions)
@@ -33,6 +32,6 @@ export default async function getCurrentUser() {
     };
   } catch (error) {
     console.error('Error fetching users:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return null;
   }
 }
