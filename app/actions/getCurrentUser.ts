@@ -30,7 +30,7 @@ export default async function getCurrentUser() {
       createdAt: currentUser.createdAt.toISOString(),
       updatedAt: currentUser.updatedAt.toISOString(),
     };
-  } catch (error: any) {
+  } catch (error) {
     return null;
   }
 }

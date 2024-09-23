@@ -28,7 +28,7 @@ export default async function getListing() {
     }));
 
     return safeUsers;
-  } catch (error: any) {
-    throw new Error(error.message || 'Error fetching users');
+  } catch (error) {
+    throw new Error();
   }
 }
