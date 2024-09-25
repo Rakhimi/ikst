@@ -47,11 +47,6 @@ export async function POST(request: Request) {
         },
       });
 
-      await prisma.user.update({
-        where: { id: currentUser.id },
-        data: { profileId: profile.id },
-      });
-
       return profile;
     });
 

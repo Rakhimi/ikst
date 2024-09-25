@@ -1,8 +1,7 @@
 import prisma from "@/lib/prismadb";
 import getCurrentUser from "./getCurrentUser";
-import { NextResponse } from "next/server";
 
-export default async function getListing() {
+export default async function getListings() {
   try {
     // Fetch current user
     const currentUser = await getCurrentUser();
@@ -17,7 +16,7 @@ export default async function getListing() {
         createdAt: 'asc',
       },
       include: {
-        profile: true, // Include the profile if it exists
+        profiles: true, // Include the profile if it exists
       },
     });
 
@@ -25,12 +24,13 @@ export default async function getListing() {
     const safeUsers = usersWithProfiles.map((user) => ({
       ...user,
       createdAt: user.createdAt.toString(),
-      profile: user.profile || null, 
+      updatedAt: user.updatedAt.toString(),
     }));
 
     return safeUsers;
   } catch (error) {
     console.error('Error fetching users:', error);
-    return NextResponse.json({ error: 'Internal server error' });
+    // Return an empty array instead of NextResponse to match the expected type
+    return [];
   }
 }

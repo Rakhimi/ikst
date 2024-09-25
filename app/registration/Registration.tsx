@@ -3,7 +3,12 @@
 import Image from 'next/image'
 import React from 'react'
 
+
+
+
 const Registration = () => {
+
+
   return (
     <div className='my-10 px-4'>
       <div className="text-center">

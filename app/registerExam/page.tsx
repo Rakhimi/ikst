@@ -3,13 +3,18 @@ import React from 'react'
 import Nav from "@/components/Navbar/Nav";
 import MaxWidthWrapper from "@/components/MadWidthWrapper";
 import RegisterExam from './RegisterExam';
+import getCurrentUser from '../actions/getCurrentUser';
 
-const RegisterExamPage = () => {
+const RegisterExamPage = async () => {
+
+  const currentUser = await getCurrentUser();
+
+
   return (
     <div>
     <Nav/>
     <MaxWidthWrapper>
-    <RegisterExam/>
+    <RegisterExam currentUser={currentUser}/>
     </MaxWidthWrapper>
     </div>
   )

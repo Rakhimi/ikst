@@ -3,7 +3,10 @@ import Registration from './Registration'
 import Nav from "@/components/Navbar/Nav";
 import MaxWidthWrapper from "@/components/MadWidthWrapper";
 
-const RegistrationPage = () => {
+const RegistrationPage = async () => {
+
+
+
   return (
     <div>
     <Nav/>

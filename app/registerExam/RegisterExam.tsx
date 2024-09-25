@@ -20,8 +20,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
-
 import { useRouter } from 'next/navigation';
+import { useModal } from '@/components/Modal/ModalContext';
+
+
+interface CurrentUser {
+  createdAt: string;
+  updatedAt: string;
+  id: number;
+  email: string;
+  hashedPassword: string;
+}
+
+interface RegisterExamProps {
+  currentUser: CurrentUser | null;
+}
 
 type FormFields = {
   name: string;
@@ -29,7 +42,7 @@ type FormFields = {
   grade: string;
 };
 
-const RegisterExam = () => {
+const RegisterExam: React.FC<RegisterExamProps> = ({ currentUser }) => {
   const {
     register,
     handleSubmit,
@@ -37,10 +50,19 @@ const RegisterExam = () => {
     setValue,
   } = useForm<FormFields>();
 
-  const router = useRouter()
+  const router = useRouter();
+
+  const { openLoginModal } = useModal();
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    
+
+    if (!currentUser) {
+      // If the user is not logged in, prompt them to sign in
+      toast.error('You need to sign in to register');
+      openLoginModal(); // Open the login modal
+      return;
+    }
+  
     try {
       const response = await fetch('/api/register-exam', {
         method: 'POST',
@@ -56,11 +78,12 @@ const RegisterExam = () => {
   
       await response.json();
       toast.success('Registration successful');
-
-      router.push('/admin');
-  
+      router.push('/dashboard');
+      router.refresh();
+    
     } catch (error) {
       console.error('Error during registration:', error);
+      toast.error('Something went wrong. Please try again.');
     }
   };
 

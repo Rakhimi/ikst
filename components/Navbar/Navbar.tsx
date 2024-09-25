@@ -18,6 +18,10 @@ const Navbar = () => {
 
   const isActive = (path: string) => pathname === path;
 
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: '/' });
+  };
+
   return (
     <nav className="bg-white text-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,18 +59,23 @@ const Navbar = () => {
             </a>
             {session ? (
               <>
-              <a
-                href="#"
-                onClick={() => signOut()}
-                className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200"
+              <div
+                onClick={handleSignOut}
+                className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200 cursor-pointer"
               >
                 Sign out
-              </a>
+              </div>
               <a
               href="/admin"
               className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/admin') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
             >
               Admin
+            </a>
+            <a
+              href="/dashboard"
+              className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/dashboard') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+            >
+              Dashboard
             </a>
             </>
             ) : (
@@ -136,7 +145,7 @@ const Navbar = () => {
           {session ? (
             <a
               href="#"
-              onClick={() => signOut()}
+              onClick={handleSignOut}
               className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200"
             >
               Sign out

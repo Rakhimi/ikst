@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { Input } from "@/components/ui/input";
 import { Button } from '../ui/button';
@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { useModal } from './ModalContext';
 import { Label } from '../ui/label';
 import { signIn } from 'next-auth/react';
+import { useRouter } from "next/navigation";
 
 
 type FormFields = {
@@ -18,6 +19,8 @@ type FormFields = {
 };
 
 const RegisterModal = () => {
+
+
   const { 
     register, 
     handleSubmit, 
@@ -25,14 +28,23 @@ const RegisterModal = () => {
     formState: { errors } 
   } = useForm<FormFields>();
 
-  const { isOpenRegister, closeRegisterModal, openLoginModal } = useModal();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { isOpenRegister, isOpenLogin, closeRegisterModal, openLoginModal } = useModal();
 
   const onClose = () => { 
+    if (isLoading) return;
     closeRegisterModal();
   };
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+  const onToggle = useCallback(() => {
+    closeRegisterModal();
+    openLoginModal();
+  }, [isOpenLogin, isOpenRegister])
 
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    setIsLoading(true); // Set loading state to true on submission
 
     const { confirmPassword, ...submitData } = data; // Exclude confirmPassword
     console.log(confirmPassword)
@@ -54,10 +66,7 @@ const RegisterModal = () => {
         toast.error(`Registration failed: ${errorResponse.error || 'Unknown error'}`);
         throw new Error('Registration failed');
       }
-  
-      // Parse response if necessary
-      const result = await response.json();
-      console.log('Registration response:', result);
+      await response.json();
   
       // Sign in the user
       const signInResponse = await signIn('credentials', {
@@ -65,6 +74,7 @@ const RegisterModal = () => {
         email: submitData.email,
         password: submitData.password,
       });
+
   
       if (signInResponse?.error) {
         toast.error(`Sign-in failed: ${signInResponse.error}`);
@@ -73,10 +83,13 @@ const RegisterModal = () => {
   
       // Notify success and close the modal
       toast.success('Registration successful');
+      router.refresh();
       closeRegisterModal();
   
     } catch (error) {
       console.error('Error during registration:', error);
+    } finally {
+      setIsLoading(false); // Set loading state back to false after submission
     }
   };
   
@@ -94,6 +107,7 @@ const RegisterModal = () => {
           placeholder='Email'
           {...register('email', { required: 'Email is required' })}
           type='email'
+          disabled={isLoading} 
         />
         {errors.email && (
           <div className='text-sm text-red-700'>
@@ -115,6 +129,7 @@ const RegisterModal = () => {
             }
           })}
           type='password'
+          disabled={isLoading} 
         />
         {errors.password && (
           <div className='text-sm text-red-700'>
@@ -133,6 +148,7 @@ const RegisterModal = () => {
               value === password || 'Passwords do not match',
           })}
           type='password'
+          disabled={isLoading} 
         />
         {errors.confirmPassword && (
           <div className='text-sm text-red-700'>
@@ -141,20 +157,19 @@ const RegisterModal = () => {
         )}
       </div>
 
-      <Button type='submit'>Register Now</Button>
+      <Button type='submit' disabled={isLoading}> 
+        {isLoading ? 'Registering...' : 'Register Now'}
+      </Button>
 
       <div className='font-semibold'>
               <h2>
                 Already have an account?{' '}
                 <span
-                  onClick={() => {
-                    closeRegisterModal();
-                    openLoginModal();
-                  }}
-                  className="text-blue-600 cursor-pointer hover:underline"
-                >
-                  Sign in now
-                </span>
+                onClick={isLoading ? undefined : onToggle} // Disable toggle when loading
+                className={`text-blue-600 cursor-pointer ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:underline'}`}
+              >
+                Sign in now
+              </span>
               </h2>
         </div>
     </form>

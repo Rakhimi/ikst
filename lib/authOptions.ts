@@ -40,8 +40,8 @@ export const authOptions: NextAuthOptions = {
   
           return {
             ...user,
-            id: user.id.toString(), // Ensure id is returned as a string
-          } // Cast to User type
+            id: user.id.toString(),
+          }
         }
       })
     ],
