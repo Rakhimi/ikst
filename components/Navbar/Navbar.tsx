@@ -102,16 +102,16 @@ const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
               <DropdownMenuContent>
                 <DropdownMenuLabel>Menu</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {session ? (
-                  <>
-                  <DropdownMenuItem>
+                {user?.role === "ADMIN" && <DropdownMenuItem>
                   <a
                     href="/admin"
                     className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/admin') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
                   >
                     Admin
                   </a>
-                  </DropdownMenuItem>
+                </DropdownMenuItem>}
+                {session ? (
+                  <>
                   <DropdownMenuItem>
                   <a
                     href="/dashboard"
