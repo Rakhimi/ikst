@@ -1,12 +1,10 @@
 
-import Nav from "@/components/Navbar/Nav";
 import MaxWidthWrapper from "@/components/MadWidthWrapper";
 import Image from "next/image";
 
 export default function Home() {
   return (
     <div>
-      <Nav/>
       <MaxWidthWrapper>
         <div className="my-10">
           <div className="text-center">

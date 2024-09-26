@@ -1,18 +1,15 @@
 import React from 'react'
-import Registration from './Registration'
+import PasswordReset from './Password'
 import MaxWidthWrapper from "@/components/MadWidthWrapper";
 
-const RegistrationPage = async () => {
-
-
-
+const page = () => {
   return (
     <div>
     <MaxWidthWrapper>
-    <Registration/>
+    <PasswordReset/>
     </MaxWidthWrapper>
     </div>
   )
 }
 
-export default RegistrationPage
+export default page

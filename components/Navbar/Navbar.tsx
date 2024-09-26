@@ -1,13 +1,43 @@
 'use client'
 
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { useSession, signOut } from "next-auth/react";
 import { useModal } from '../Modal/ModalContext';
 import { usePathname } from 'next/navigation';
+import { $Enums } from '@prisma/client';
+import { BsPersonCircle } from "react-icons/bs";
 
-const Navbar = () => {
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+interface UserProps {
+  createdAt: string;
+  updatedAt: string;
+  id: number;
+  email: string;
+  hashedPassword: string;
+  maiden: string;
+  sport: string;
+  color: string;
+  role: $Enums.UserRole;
+}
+
+interface CurrentProps {
+  currentUser: Promise<UserProps | null>;
+}
+
+const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
+
+
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<UserProps | null>(null); 
   const { openRegisterModal, openLoginModal } = useModal();
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -15,6 +45,14 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    currentUser.then((resolvedUser) => {
+      setUser(resolvedUser);
+    });
+  }, [currentUser]);
+
+  console.log(user?.role)
 
   const isActive = (path: string) => pathname === path;
 
@@ -57,45 +95,65 @@ const Navbar = () => {
             >
               Study Materials
             </a>
-            {session ? (
-              <>
-              <div
-                onClick={handleSignOut}
-                className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200 cursor-pointer"
-              >
-                Sign out
-              </div>
-              <a
-              href="/admin"
-              className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/admin') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
-            >
-              Admin
-            </a>
-            <a
-              href="/dashboard"
-              className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/dashboard') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
-            >
-              Dashboard
-            </a>
-            </>
-            ) : (
-              <>
-                <a
-                  href="#"
-                  onClick={openLoginModal}
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200"
-                >
-                  Login
-                </a>
-                <a
-                  href="#"
-                  onClick={openRegisterModal}
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200"
-                >
-                  Register
-                </a>
-              </>
-            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+              <BsPersonCircle className='text-3xl'/>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Menu</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {session ? (
+                  <>
+                  <DropdownMenuItem>
+                  <a
+                    href="/admin"
+                    className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/admin') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+                  >
+                    Admin
+                  </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                  <a
+                    href="/dashboard"
+                    className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/dashboard') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+                  >
+                    Dashboard
+                  </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                  <div
+                    onClick={handleSignOut}
+                    className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200 cursor-pointer"
+                  >
+                    Sign out
+                  </div>
+                  </DropdownMenuItem>
+                  </>
+
+                ) : (
+                  <>
+                  <DropdownMenuItem>
+                  <a
+                    href="#"
+                    onClick={openLoginModal}
+                    className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200"
+                  >
+                    Login
+                  </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                  <a
+                    href="#"
+                    onClick={openRegisterModal}
+                    className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200"
+                  >
+                    Register
+                  </a>
+                  </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="md:hidden">
             <button onClick={toggleMenu} className="focus:outline-none">

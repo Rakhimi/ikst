@@ -10,12 +10,16 @@ import { useModal } from './ModalContext';
 import { Label } from '../ui/label';
 import { signIn } from 'next-auth/react';
 import { useRouter } from "next/navigation";
+import axios from 'axios';
 
 
 type FormFields = {
   email: string;
   password: string;
   confirmPassword: string;
+  maiden: string;
+  sport: string;
+  color: string;
 };
 
 const RegisterModal = () => {
@@ -45,36 +49,28 @@ const RegisterModal = () => {
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     setIsLoading(true); // Set loading state to true on submission
-
+  
     const { confirmPassword, ...submitData } = data; // Exclude confirmPassword
-    console.log(confirmPassword)
+    console.log(confirmPassword);
     console.log(submitData);
   
     try {
-      // Send registration data to the server
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submitData), // Send only email and password
-      });
+      // Send registration data to the server using Axios
+      const response = await axios.post('/api/register', submitData);
   
-      // Check if the response is OK
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        toast.error(`Registration failed: ${errorResponse.error || 'Unknown error'}`);
+      if (response.status !== 200) {
+        toast.error(`Registration failed: ${response.data.error || 'Unknown error'}`);
         throw new Error('Registration failed');
       }
-      await response.json();
   
-      // Sign in the user
       const signInResponse = await signIn('credentials', {
         redirect: false,
         email: submitData.email,
         password: submitData.password,
+        maiden: submitData.maiden,
+        sport: submitData.sport,
+        color: submitData.color,
       });
-
   
       if (signInResponse?.error) {
         toast.error(`Sign-in failed: ${signInResponse.error}`);
@@ -83,11 +79,16 @@ const RegisterModal = () => {
   
       // Notify success and close the modal
       toast.success('Registration successful');
-      router.refresh();
-      closeRegisterModal();
+      router.refresh(); // Refresh the page (Next.js specific)
+      closeRegisterModal(); // Assuming you have a function to close the modal
   
-    } catch (error) {
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      
+      
+      toast.error(`Error during registration: ${error.response?.data?.error || error.message}`);
       console.error('Error during registration:', error);
+  
     } finally {
       setIsLoading(false); // Set loading state back to false after submission
     }
@@ -102,12 +103,13 @@ const RegisterModal = () => {
       className='flex flex-col gap-4'
     >
       <div>
-        <Label htmlFor="email">Email</Label>
+        <Label className="font-semibold" htmlFor="email">Email</Label>
         <Input
           placeholder='Email'
           {...register('email', { required: 'Email is required' })}
           type='email'
-          disabled={isLoading} 
+          disabled={isLoading}
+          className="hover:border-gray-700" 
         />
         {errors.email && (
           <div className='text-sm text-red-700'>
@@ -117,7 +119,7 @@ const RegisterModal = () => {
       </div>
       
       <div>
-        <Label htmlFor="password">Password</Label>
+        <Label className="font-semibold" htmlFor="password">Password</Label>
         <Input
           placeholder='Password'
           {...register('password', 
@@ -130,6 +132,7 @@ const RegisterModal = () => {
           })}
           type='password'
           disabled={isLoading} 
+          className="hover:border-gray-700" 
         />
         {errors.password && (
           <div className='text-sm text-red-700'>
@@ -139,7 +142,7 @@ const RegisterModal = () => {
       </div>
 
       <div>
-        <Label htmlFor="confirmPassword">Confirm Password</Label>
+        <Label className="font-semibold" htmlFor="confirmPassword">Confirm Password</Label>
         <Input
           placeholder='Confirm Password'
           {...register('confirmPassword', {
@@ -149,12 +152,61 @@ const RegisterModal = () => {
           })}
           type='password'
           disabled={isLoading} 
+          className="hover:border-gray-700" 
         />
         {errors.confirmPassword && (
           <div className='text-sm text-red-700'>
             {errors.confirmPassword.message}
           </div>
         )}
+      </div>
+      <div className="flex flex-col gap-4">
+      <h1 className="font-semibold text-lg">Secret questions</h1>
+      <div>
+      <Label className="font-semibold" htmlFor="motherMaidenName">Mother&apos;s Maiden Name</Label>
+      <Input
+          placeholder='Mother Maiden Name'
+          {...register('maiden', { required: 'This is required' })}
+          type='text'
+          disabled={isLoading} 
+          className="hover:border-gray-700" 
+      />
+      {errors.maiden && (
+          <div className='text-sm text-red-700'>
+            {errors.maiden.message}
+          </div>
+        )}
+      </div>
+      <div>
+      <Label className="font-semibold" htmlFor="favoriteSport">Favorite Sport</Label>
+      <Input
+          placeholder='Favorite Sport'
+          {...register('sport', { required: 'This is required' })}
+          type='text'
+          disabled={isLoading} 
+          className="hover:border-gray-700" 
+      />
+      {errors.sport && (
+          <div className='text-sm text-red-700'>
+            {errors.sport.message}
+          </div>
+        )}
+      </div>
+      <div>
+      <Label className="font-semibold" htmlFor="favoriteColor">Favorite Color</Label>
+      <Input
+          placeholder='Favorite Color'
+          {...register('color', { required: 'This is required' })}
+          type='text'
+          disabled={isLoading} 
+          className="hover:border-gray-700" 
+      />
+      {errors.color && (
+          <div className='text-sm text-red-700'>
+            {errors.color.message}
+          </div>
+        )}
+      </div>
       </div>
 
       <Button type='submit' disabled={isLoading}> 
@@ -249,10 +301,10 @@ const RegisterModal = () => {
                 "
                 onClick={onClose}
               >
-                <IoMdClose size={18} />
+                <IoMdClose size={30} />
               </button>
             </div>
-            <div className="text-lg font-semibold px-4">
+            <div className="text-2xl font-semibold px-4 text-center">
               {'Register your account here'}
             </div>
             <div className="relative p-6 flex-auto">

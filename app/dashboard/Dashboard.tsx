@@ -30,11 +30,11 @@ interface Listing {
 }
 
 interface DashboardProps {
-  listing: Listing;
+  listing: Listing | null;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ listing }) => {
-  const [profiles, setProfiles] = useState<Listing['profiles']>(listing.profiles);
+  const [profiles, setProfiles] = useState<Listing['profiles']>(listing?.profiles || []);
   const router = useRouter();
 
   const addStudent = () => { 
@@ -68,58 +68,78 @@ const Dashboard: React.FC<DashboardProps> = ({ listing }) => {
     }
   };
 
-  return (
-    <div className="p-6">
-      <div className='flex justify-between'>
-        <h1 className="text-2xl font-bold mb-4">Your Registered Students</h1>
-        <div>
-          <Button onClick={addStudent}>Add Student</Button>
+  if (!listing) {
+    return (
+      <div className="flex items-center justify-center min-h-screen p-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">No Registered Student</h1>
+          <Button onClick={addStudent}>Register Now</Button>
         </div>
       </div>
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profile ID</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">School</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {profiles.map((profile) => (
-            <tr key={profile.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.id}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.name}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.school}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.grade}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button className="bg-red-500 text-white font-semibold hover:bg-red-600">
-                    Delete
-                </Button>
-              </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will permanently delete your registration
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => deleteProfile(profile.id)}>Continue</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>  
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    );
+  }
+
+  if (profiles.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen p-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">No Registered Student</h1>
+          <Button onClick={addStudent}>Register Now</Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (<div className="w-full p-6">
+    <div className='flex justify-between'>
+      <h1 className="text-2xl font-bold mb-4">Your Registered Students</h1>
+      <div>
+        <Button onClick={addStudent}>Add Student</Button>
+      </div>
     </div>
-  );
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-gray-50">
+        <tr>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profile ID</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">School</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {profiles.map((profile) => (
+          <tr key={profile.id}>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.id}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.name}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.school}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.grade}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button className="bg-red-500 text-white font-semibold hover:bg-red-600">
+                  Delete
+              </Button>
+            </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete your registration
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => deleteProfile(profile.id)}>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>  
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>)
 };
 
 export default Dashboard;

@@ -50,7 +50,8 @@ const LoginModal = () => {
       });
 
       if (result?.error) {
-        toast.error(`Login failed`);
+        console.log(result)
+        toast.error(result.error);
       } else {
         toast.success('Login successful');
         router.refresh();
@@ -70,12 +71,13 @@ const LoginModal = () => {
       className='flex flex-col gap-4'
     >
       <div>
-        <Label htmlFor="email">Email</Label>
+        <Label className="font-semibold" htmlFor="email">Email</Label>
         <Input
           placeholder='Email'
           {...register('email', { required: 'Email is required' })}
           type='email'
-          disabled={isLoading} // Disable input when loading
+          disabled={isLoading}
+          className="hover:border-gray-700"
         />
         {errors.email && (
           <div className='text-sm text-red-700'>
@@ -84,7 +86,7 @@ const LoginModal = () => {
         )}
       </div>
       <div>
-        <Label htmlFor="password">Password</Label>
+        <Label className="font-semibold" htmlFor="password">Password</Label>
         <Input
           placeholder='Password'
           {...register('password', 
@@ -96,7 +98,8 @@ const LoginModal = () => {
             }
           })}
           type='password'
-          disabled={isLoading} // Disable input when loading
+          disabled={isLoading}
+          className="hover:border-gray-700"
         />
         {errors.password && (
           <div className='text-sm text-red-700'>
@@ -107,7 +110,7 @@ const LoginModal = () => {
       <Button type='submit' disabled={isLoading}> 
         {isLoading ? 'Signing in...' : 'Sign in'}
       </Button>
-      <div className='font-semibold'>
+      <div className='flex flex-col gap-2 font-semibold'>
         <h2>
           Doesn&apos;t have an account?{' '}
           <span
@@ -117,6 +120,20 @@ const LoginModal = () => {
             Register now
           </span>
         </h2>
+        <p className="text-sm">
+          Forget your password?{' '}
+          <span
+            onClick={() => {
+              if (!isLoading) {
+                router.push('/password');
+                closeLoginModal();
+              }
+            }}
+            className={`text-blue-600 cursor-pointer ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:underline'}`}
+          >
+            Reset here
+          </span>
+        </p>
       </div>
     </form>
   );
@@ -197,10 +214,10 @@ const LoginModal = () => {
                 onClick={onClose}
                 disabled={isLoading} // Disable close button when loading
               >
-                <IoMdClose size={18} />
+                <IoMdClose size={30} />
               </button>
             </div>
-            <div className="text-lg font-semibold px-4">
+            <div className="text-2xl font-semibold px-4 text-center">
               {'Sign in'}
             </div>
             <div className="relative p-6 flex-auto">

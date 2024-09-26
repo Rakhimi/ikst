@@ -7,12 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 model User {
   id             Int       @id @default(autoincrement())
   email          String    @unique
   hashedPassword String    // Storing the hashed password
+  maiden         String
+  sport          String
+  color          String
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+
+  role UserRole @default(USER)
 
   profiles       Profile[] @relation("UserProfiles") // One-to-many relation
 }
