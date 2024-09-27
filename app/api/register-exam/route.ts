@@ -7,7 +7,8 @@ type Profile = {
   id: number;
   createdAt: string;
   updatedAt: string;
-  name: string;
+  firstName: string;
+  lastName: string
   school: string;
   grade: string;
   userId: number;
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
   try {
     // Parse the request body
     const body = await request.json();
-    const { name, school, grade } = body;
+    const { firstName, lastName, school, grade } = body;
 
     const currentUser = await getCurrentUser();
 
@@ -26,7 +27,10 @@ export async function POST(request: Request) {
     }
 
     // Validate the input data
-    if (!name || typeof name !== 'string' || name.trim() === '') {
+    if (!firstName || typeof firstName !== 'string' || firstName.trim() === '') {
+      return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
+    }
+    if (!lastName || typeof lastName !== 'string' || firstName.trim() === '') {
       return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
     }
     if (!school || typeof school !== 'string' || school.trim() === '') {
@@ -40,7 +44,8 @@ export async function POST(request: Request) {
     const newProfile = await prisma.$transaction(async (prisma) => {
       const profile = await prisma.profile.create({
         data: {
-          name,
+          firstName,
+          lastName,
           school,
           grade,
           userId: currentUser.id,

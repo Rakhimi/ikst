@@ -19,7 +19,8 @@ import {
 
 interface Profile {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
   school: string;
   grade: string;
   userId: number;
@@ -77,7 +78,8 @@ const Admin: React.FC<AdminProps> = ({ listings }) => {
           <tr>
             <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Email</th>
             <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>ID</th>
-            <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Name</th>
+            <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>First name</th>
+            <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Last name</th>
             <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>School</th>
             <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Grade</th>
             <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Grade</th>
@@ -90,7 +92,8 @@ const Admin: React.FC<AdminProps> = ({ listings }) => {
                 {listings.find(listing => listing.profiles.some(p => p.id === profile.id))?.email || 'Unknown'}
               </td>
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{profile.id}</td>
-                <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{profile.name}</td>
+                <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{profile.firstName}</td>
+                <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{profile.lastName}</td>
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{profile.school}</td>
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{profile.grade}</td>
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>

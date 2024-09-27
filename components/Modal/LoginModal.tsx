@@ -117,7 +117,7 @@ const LoginModal = () => {
             onClick={isLoading ? undefined : onToggle} // Disable toggle when loading
             className={`text-blue-600 cursor-pointer ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:underline'}`}
           >
-            Register now
+            Create now
           </span>
         </h2>
         <p className="text-sm">

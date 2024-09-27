@@ -305,7 +305,7 @@ const RegisterModal = () => {
               </button>
             </div>
             <div className="text-2xl font-semibold px-4 text-center">
-              {'Register your account here'}
+              {'Create your account here'}
             </div>
             <div className="relative p-6 flex-auto">
               {body}

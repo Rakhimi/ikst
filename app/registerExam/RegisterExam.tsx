@@ -37,7 +37,8 @@ interface RegisterExamProps {
 }
 
 type FormFields = {
-  name: string;
+  firstName: string;
+  lastName:string;
   school: string;
   grade: string;
 };
@@ -100,11 +101,23 @@ const RegisterExam: React.FC<RegisterExamProps> = ({ currentUser }) => {
                 <Label>Student&apos;s Name</Label>
                 <Input
                   placeholder='Name'
-                  {...register('name', { required: 'Name is required' })}
+                  {...register('firstName', { required: 'Name is required' })}
                 />
-                {errors.name && (
+                {errors.firstName && (
                   <div className='text-sm text-red-700'>
-                    {errors.name.message}
+                    {errors.firstName.message}
+                  </div>
+                )}
+              </div>
+              <div className='mb-8'>
+                <Label>Student&apos;s Name</Label>
+                <Input
+                  placeholder='Name'
+                  {...register('lastName', { required: 'Name is required' })}
+                />
+                {errors.lastName && (
+                  <div className='text-sm text-red-700'>
+                    {errors.lastName.message}
                   </div>
                 )}
               </div>

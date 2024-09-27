@@ -52,8 +52,6 @@ const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
     });
   }, [currentUser]);
 
-  console.log(user?.role)
-
   const isActive = (path: string) => pathname === path;
 
   const handleSignOut = async () => {
@@ -102,14 +100,33 @@ const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
               <DropdownMenuContent>
                 <DropdownMenuLabel>Menu</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {user?.role === "ADMIN" && <DropdownMenuItem>
+                {user?.role === "ADMIN" && 
+                <>
+                <DropdownMenuItem>
                   <a
                     href="/admin"
                     className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/admin') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
                   >
                     Admin
                   </a>
-                </DropdownMenuItem>}
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                <a
+                  href="/questions"
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/questions') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+                >
+                  Create questions
+                </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                <a
+                  href="/questionSet"
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/questionSet') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+                >
+                  Review questions
+                </a>
+                </DropdownMenuItem>
+                </>}
                 {session ? (
                   <>
                   <DropdownMenuItem>
@@ -147,7 +164,7 @@ const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
                     onClick={openRegisterModal}
                     className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200"
                   >
-                    Register
+                    Create Account
                   </a>
                   </DropdownMenuItem>
                   </>
@@ -204,7 +221,7 @@ const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
             <a
               href="#"
               onClick={handleSignOut}
-              className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200"
+              className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-300"
             >
               Sign out
             </a>
@@ -213,14 +230,14 @@ const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
               <a
                 href="#"
                 onClick={openLoginModal}
-                className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200"
+                className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-300"
               >
                 Login
               </a>
               <a
                 href="#"
                 onClick={openRegisterModal}
-                className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200"
+                className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-300"
               >
                 Register
               </a>

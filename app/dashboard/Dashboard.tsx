@@ -20,7 +20,8 @@ import {
 // Define the Profile and Listing types for better type safety
 interface Profile {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
   school: string;
   grade: string;
 }
@@ -101,7 +102,8 @@ const Dashboard: React.FC<DashboardProps> = ({ listing }) => {
       <thead className="bg-gray-50">
         <tr>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profile ID</th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">School</th>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -111,7 +113,8 @@ const Dashboard: React.FC<DashboardProps> = ({ listing }) => {
         {profiles.map((profile) => (
           <tr key={profile.id}>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.id}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.name}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.firstName}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.lastName}</td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.school}</td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.grade}</td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
