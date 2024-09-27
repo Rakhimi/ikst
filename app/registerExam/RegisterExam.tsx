@@ -98,7 +98,7 @@ const RegisterExam: React.FC<RegisterExamProps> = ({ currentUser }) => {
             </CardHeader>
             <CardContent>
               <div className='mb-8'>
-                <Label>Student&apos;s Name</Label>
+                <Label>Student&apos;s First Name</Label>
                 <Input
                   placeholder='Name'
                   {...register('firstName', { required: 'Name is required' })}
@@ -110,7 +110,7 @@ const RegisterExam: React.FC<RegisterExamProps> = ({ currentUser }) => {
                 )}
               </div>
               <div className='mb-8'>
-                <Label>Student&apos;s Name</Label>
+                <Label>Student&apos;s Last Name</Label>
                 <Input
                   placeholder='Name'
                   {...register('lastName', { required: 'Name is required' })}
