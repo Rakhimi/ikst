@@ -12,6 +12,13 @@ enum UserRole {
   USER
 }
 
+enum AnswerOption {
+  A
+  B
+  C
+  D
+}
+
 model User {
   id             Int       @id @default(autoincrement())
   email          String    @unique
@@ -22,31 +29,27 @@ model User {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
-  role UserRole @default(USER)
+  role           UserRole  @default(USER)
 
   profiles       Profile[] @relation("UserProfiles")
-  questionSets   QuestionSet[] @relation("UserQuestionSets")  // Relation to QuestionSets
+  questionSets   QuestionSet[] @relation("UserQuestionSets")
 }
 
 model Profile {
   id         Int     @id @default(autoincrement())
-  firstName  String   @default("Abdul")
-  lastName   String   @default("Abdul")
+  firstName  String   
+  lastName   String   
   school     String
   grade      String
+  code       String   @unique
+  result     String?  
 
   user       User    @relation("UserProfiles", fields: [userId], references: [id])
   userId     Int     // Foreign key for User
+
+  answers    Answer[]  // Relation to the answers given by the user
 }
 
-enum AnswerOption {
-  A
-  B
-  C
-  D
-}
-
-// New Model for Question Sets
 model QuestionSet {
   id          Int        @id @default(autoincrement())
   title       String     // Title or description of the question set
@@ -72,4 +75,17 @@ model Question {
 
   questionSet QuestionSet   @relation("SetQuestions", fields: [questionSetId], references: [id])
   questionSetId Int         // Foreign key for QuestionSet
+
+  answers     Answer[]      @relation("QuestionAnswers") // Add relation to Answer
+}
+
+model Answer {
+  id          Int          @id @default(autoincrement())
+  option      AnswerOption 
+
+  profile     Profile      @relation(fields: [profileId], references: [id])
+  profileId   Int          
+
+  question    Question     @relation("QuestionAnswers", fields: [questionId], references: [id])
+  questionId  Int          
 }

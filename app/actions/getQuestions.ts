@@ -58,7 +58,9 @@ export default async function getQuestionSet(questionSetId?: number): Promise<Qu
         id: questionSetId,
       },
       include: {
-        questions: true,
+        questions: {
+          orderBy: { id: 'asc' } 
+        }
       },
     });
 

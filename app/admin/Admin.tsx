@@ -24,6 +24,7 @@ interface Profile {
   school: string;
   grade: string;
   userId: number;
+  code: string;
 }
 
 interface Listings {
@@ -82,7 +83,8 @@ const Admin: React.FC<AdminProps> = ({ listings }) => {
             <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Last name</th>
             <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>School</th>
             <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Grade</th>
-            <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Grade</th>
+            <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Code</th>
+            <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Action</th>
           </tr>
         </thead>
         <tbody className='bg-white divide-y divide-gray-200'>
@@ -96,6 +98,7 @@ const Admin: React.FC<AdminProps> = ({ listings }) => {
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{profile.lastName}</td>
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{profile.school}</td>
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{profile.grade}</td>
+                <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{profile.code}</td>
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                 <AlertDialog>
               <AlertDialogTrigger asChild>

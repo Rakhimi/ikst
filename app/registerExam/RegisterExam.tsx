@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import axios from 'axios';
 import { toast } from "react-hot-toast";
 import {
   Card,
@@ -55,8 +56,19 @@ const RegisterExam: React.FC<RegisterExamProps> = ({ currentUser }) => {
 
   const { openLoginModal } = useModal();
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
 
+  function generateRandomCode(length: number) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
     if (!currentUser) {
       // If the user is not logged in, prompt them to sign in
       toast.error('You need to sign in to register');
@@ -64,24 +76,25 @@ const RegisterExam: React.FC<RegisterExamProps> = ({ currentUser }) => {
       return;
     }
   
+    // Generate the random 10-character code
+    const code = generateRandomCode(10);
+  
     try {
-      const response = await fetch('/api/register-exam', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      // Add the generated code to the form data
+      const response = await axios.post('/api/register-exam', {
+        ...data,
+        code,  // Include the generated code in the request body
       });
   
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error('Registration failed');
       }
   
-      await response.json();
+      // Handle success response
       toast.success('Registration successful');
-      router.push('/dashboard');
-      router.refresh();
-    
+      router.push('/dashboard');  // Navigate to dashboard on success
+      router.refresh();  // Optional: refresh the page
+      
     } catch (error) {
       console.error('Error during registration:', error);
       toast.error('Something went wrong. Please try again.');
@@ -135,6 +148,7 @@ const RegisterExam: React.FC<RegisterExamProps> = ({ currentUser }) => {
                     <SelectItem value="WDLTX">Woodland TX</SelectItem>
                     <SelectItem value="BILTX">Bilal ISGH TX</SelectItem>
                     <SelectItem value="MCAMI">MCA Ann Arbor</SelectItem>
+                    <SelectItem value="MCAMI">MABIL</SelectItem>
                   </SelectContent>
                 </Select>
                 {errors.school && (

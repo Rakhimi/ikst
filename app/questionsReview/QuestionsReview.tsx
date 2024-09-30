@@ -1,6 +1,8 @@
 'use client'
 
 import React from 'react';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 // Define the types based on your data structure
 interface Question {
@@ -28,22 +30,41 @@ interface QuestionsReviewProps {
 }
 
 const QuestionsReview: React.FC<QuestionsReviewProps> = ({ questionSet }) => {
+  const router = useRouter();
 
+  // Handle null case
   if (questionSet === null) {
     return <div className='mt-20 text-2xl font-semibold'>No question sets available</div>;
   }
 
+  // Handle array case
   if (Array.isArray(questionSet)) {
     if (questionSet.length === 0) {
-      return <div className='text-2xl font-semibold'>This is an error</div>;
-    } 
-    return <div className='text-2xl font-semibold'>This is an error</div>;}
+      return <div className='text-2xl font-semibold'>No questions available in this set</div>;
+    }
+    // Consider rendering multiple sets if needed, but return a message for now
+    return <div className='text-2xl font-semibold'>Invalid question set</div>;
+  }
 
+  // Destructure the questionSet object
   const { title, questions } = questionSet;
+
+  // Navigate to edit mode with initial data
+  const navigateToEdit = () => {
+    
+    const initialData = encodeURIComponent(JSON.stringify(questionSet));
+    
+    router.push(`/questions?initialData=${initialData}`);
+  };
 
   return (
     <div className='my-10'>
-      <h1 className='text-2xl font-bold'>{title}</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className='text-2xl font-bold'>{title}</h1>
+        <Button onClick={navigateToEdit}>
+          Edit
+        </Button>
+      </div>
       {questions.map((question) => (
         <div key={question.id} className="question p-4 mt-5 border rounded-md">
           <h2 className='text-xl font-semibold'>{question.question}</h2>

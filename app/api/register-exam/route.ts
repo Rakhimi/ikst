@@ -12,13 +12,15 @@ type Profile = {
   school: string;
   grade: string;
   userId: number;
+  code: string;
+  result?: string;
 };
 
 export async function POST(request: Request) {
   try {
     // Parse the request body
     const body = await request.json();
-    const { firstName, lastName, school, grade } = body;
+    const { firstName, lastName, school, grade, code } = body;
 
     const currentUser = await getCurrentUser();
 
@@ -49,6 +51,7 @@ export async function POST(request: Request) {
           school,
           grade,
           userId: currentUser.id,
+          code
         },
       });
 

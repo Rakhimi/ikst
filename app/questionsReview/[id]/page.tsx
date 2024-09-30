@@ -9,8 +9,6 @@ const page = async ({ params }: { params: { id: number}}) => {
   
   const { id } = params;
 
-  console.log(id)
-
   const questionSet = await getQuestionSet(Number(id));
 
   
