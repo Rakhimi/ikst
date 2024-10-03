@@ -89,3 +89,9 @@ model Answer {
   question    Question     @relation("QuestionAnswers", fields: [questionId], references: [id])
   questionId  Int          
 }
+
+model Result {
+  id          Int          @id @default(autoincrement())
+  school      Int          
+  allSchool   Int
+}

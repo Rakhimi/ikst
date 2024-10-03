@@ -99,6 +99,12 @@ const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
             >
               Take a test
             </a>
+            <a
+              href="/enterResult"
+              className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/enterResult') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+            >
+              Result
+            </a>
             <DropdownMenu>
               <DropdownMenuTrigger>
               <BsPersonCircle className='text-3xl'/>
