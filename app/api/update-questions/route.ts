@@ -9,6 +9,16 @@ enum AnswerOption {
     D = 'D',
 }
 
+enum GradeOption {
+  GR3='GR3',
+  GR7='GR7'
+}
+
+enum TypeOption {
+  Islamic='Islamic',
+  Quran='Quran'
+}
+
 interface Question {
     id?: number;  // Optional, as new questions won't have an id yet
     question: string;
@@ -20,8 +30,10 @@ interface Question {
 }
 
 interface FormValues {
-    questions: Question[];
-    title: string;
+  questions: Question[];
+  title: string;
+  grade: GradeOption;
+  type: TypeOption;
 }
 
 export async function POST(request: Request) {
@@ -30,7 +42,7 @@ export async function POST(request: Request) {
         const body = await request.json();
 
         // Destructure questions and title from the request body
-        const { questions, title, id }: FormValues & { id: number } = body;
+        const { questions, title, id, grade, type }: FormValues & { id: number } = body;
 
         // Get the current user (assuming this function gets user data from the session)
         const currentUser = await getCurrentUser();
@@ -95,6 +107,8 @@ export async function POST(request: Request) {
         where: { id },  // Where clause for the question set
         data: {
           title,
+          grade,
+          type
         },
       });
 

@@ -5,6 +5,17 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
 // Define the types based on your data structure
+
+enum GradeOption {
+  GR3='GR3',
+  GR7='GR7'
+}
+
+enum TypeOption {
+  Islamic='Islamic',
+  Quran='Quran'
+}
+
 interface Question {
   id: number;
   question: string;
@@ -23,6 +34,8 @@ interface QuestionSet {
   createdAt: string;
   updatedAt: string;
   questions: Question[];
+  grade: GradeOption;
+  type: TypeOption;
 }
 
 interface QuestionsReviewProps {
@@ -47,7 +60,7 @@ const QuestionsReview: React.FC<QuestionsReviewProps> = ({ questionSet }) => {
   }
 
   // Destructure the questionSet object
-  const { title, questions } = questionSet;
+  const { title, questions, grade, type } = questionSet;
 
   // Navigate to edit mode with initial data
   const navigateToEdit = () => {
@@ -60,7 +73,11 @@ const QuestionsReview: React.FC<QuestionsReviewProps> = ({ questionSet }) => {
   return (
     <div className='my-10'>
       <div className="flex justify-between items-center mb-4">
+        <div className='flex flex-col gap-2'>
         <h1 className='text-2xl font-bold'>{title}</h1>
+        <h2 className='text-2xl font-semibold'>{grade}</h2>
+        <h3 className='text-2xl font-semibold'>{type}</h3>
+        </div>
         <Button onClick={navigateToEdit}>
           Edit
         </Button>

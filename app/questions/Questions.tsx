@@ -25,6 +25,16 @@ enum AnswerOption {
     D = 'D',
 }
 
+enum GradeOption {
+    GR3='GR3',
+    GR7='GR7'
+}
+
+enum TypeOption {
+    Islamic='Islamic',
+    Quran='Quran'
+}
+
 interface Question {
     id?:number;
     question: string;
@@ -39,6 +49,8 @@ interface Question {
 interface FormValues {
     questions: Question[];
     title: string;
+    grade: GradeOption;
+    type: TypeOption;
 }
 
 interface QuestionsProps {
@@ -152,6 +164,41 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
                         placeholder="Questions Set Name"
                     />
                 </div>
+                <div className='flex gap-4 mb-5'>
+                <Controller
+                    name={'grade'}
+                    rules={{ required: true }}
+                    control={control}
+                    render={({ field }) => (
+                        <Select {...field} value={field.value || ''} onValueChange={field.onChange}>
+                            <SelectTrigger className="w-[180px] border border-gray-400">
+                                <SelectValue placeholder="Grade" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={GradeOption.GR3}>GR3</SelectItem>
+                                <SelectItem value={GradeOption.GR7}>GR7</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    )}
+                />
+                <Controller
+                    name={'type'}
+                    rules={{ required: true }}
+                    control={control}
+                    render={({ field }) => (
+                        <Select {...field} value={field.value || ''} onValueChange={field.onChange}>
+                            <SelectTrigger className="w-[180px] border border-gray-400">
+                                <SelectValue placeholder="Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={TypeOption.Islamic}>Islamic Studies</SelectItem>
+                                <SelectItem value={TypeOption.Quran}>Quran</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    )}
+                />
+                </div>
+
                 <div className='mb-5'>
                     <Label className='font-semibold'>Make sure to fill everything including the correct answer</Label>
                 </div>

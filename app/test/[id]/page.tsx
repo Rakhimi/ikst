@@ -2,13 +2,15 @@
 
 import MaxWidthWrapper from '@/components/MadWidthWrapper'
 import React from 'react'
-import getQuestionSet from '../actions/getQuestions'
-import Test from './Test'
+import getQuestions from '../../actions/getQuestions'
+import Test from '../Test'
 
 
-const page = async () => {
+const page = async ({ params }: { params: { id: number}}) => {
 
-    const questionSet = await getQuestionSet(3);
+  const { id } = params;
+
+  const questionSet = await getQuestions(Number(id));
 
 
   return (

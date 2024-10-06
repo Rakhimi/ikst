@@ -2,14 +2,17 @@
 
 import MaxWidthWrapper from '@/components/MadWidthWrapper';
 import React from 'react'
-import getQuestionSet from '../actions/getQuestions'
+import getQuestionSet from '../actions/getQuestionSet'
 import QuestionSet from './QuestionSet';
 
 const Page: React.FC = async () => {
     
   const questionSets = await getQuestionSet();
 
-  if(questionSets)
+
+  
+
+  if(questionSets) {
 
   return (
     <div>
@@ -17,7 +20,7 @@ const Page: React.FC = async () => {
         <QuestionSet questionSets={questionSets}/>
       </MaxWidthWrapper>
     </div>
-  );
+  );}
 };
 
 export default Page;

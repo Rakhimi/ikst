@@ -58,7 +58,7 @@ const EnterTest = () => {
         toast.error(error.key)
       } else {
         
-        router.push('/test')
+        router.push('/testList')
         toast.success('Code verified')
       }
     } catch (error) {

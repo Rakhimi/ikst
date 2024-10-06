@@ -9,6 +9,16 @@ enum AnswerOption {
     D = 'D',
 }
 
+enum GradeOption {
+    GR3='GR3',
+    GR7='GR7'
+}
+
+enum TypeOption {
+    Islamic='Islamic',
+    Quran='Quran'
+}
+
 interface Question {
     question: string;
     option1: string;
@@ -22,6 +32,8 @@ interface Question {
 interface FormValues {
     questions: Question[];
     title: string;
+    grade: GradeOption;
+    type: TypeOption;
 }
 
 export async function POST(request: Request) {
@@ -30,7 +42,7 @@ export async function POST(request: Request) {
         const body = await request.json();
 
         // Destructure questions from the request body
-        const { questions, title }: FormValues = body;
+        const { questions, title, grade, type }: FormValues = body;
 
         // Get the current user (assuming this function gets user data from the session)
         const currentUser = await getCurrentUser();
@@ -41,7 +53,9 @@ export async function POST(request: Request) {
         // Create a new QuestionSet and associate the questions with it
         const questionSet = await prisma.questionSet.create({
             data: {
-                title: title,  // You can adjust this title as needed or include it in the body
+                title: title,
+                grade: grade,
+                type: type,
                 user: { connect: { id: currentUser.id } },
                 questions: {
                     create: questions.map((question) => ({

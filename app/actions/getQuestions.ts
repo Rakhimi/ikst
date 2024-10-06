@@ -1,10 +1,17 @@
-
-
 import prisma from "@/lib/prismadb";
 import getCurrentUser from "./getCurrentUser";
 
-
 // Define types
+enum GradeOption {
+  GR3 = 'GR3',
+  GR7 = 'GR7'
+}
+
+enum TypeOption {
+  Islamic = 'Islamic',
+  Quran = 'Quran'
+}
+
 interface Question {
   id: number;
   question: string;
@@ -12,7 +19,7 @@ interface Question {
   option2: string;
   option3: string;
   option4: string;
-  answer: string;
+  answer: string;  // This can be a string or enum depending on how Prisma is set up
   createdAt: string;
   updatedAt: string;
 }
@@ -23,33 +30,16 @@ interface QuestionSet {
   createdAt: string;
   updatedAt: string;
   questions: Question[];
+  grade: GradeOption;
+  type: TypeOption;
 }
 
-export default async function getQuestionSet(questionSetId?: number): Promise<QuestionSet | QuestionSet[] | null> {
+export default async function getQuestions(questionSetId?: number): Promise<QuestionSet | null> {
   try {
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
       return null;
-    }
-
-    if (!questionSetId) {
-      // Retrieve all question sets without questions
-      const questionSets = await prisma.questionSet.findMany({
-        select: {
-          id: true,
-          title: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
-
-      return questionSets.map(set => ({
-        ...set,
-        createdAt: set.createdAt.toString(),
-        updatedAt: set.updatedAt.toString(),
-        questions: [] // Add an empty array for questions
-      }));
     }
 
     // Retrieve a specific question set with related questions
@@ -69,11 +59,20 @@ export default async function getQuestionSet(questionSetId?: number): Promise<Qu
     }
 
     return {
-      ...questionSet,
+      id: questionSet.id,
+      title: questionSet.title,
       createdAt: questionSet.createdAt.toString(),
       updatedAt: questionSet.updatedAt.toString(),
+      grade: questionSet.grade as GradeOption,
+      type: questionSet.type as TypeOption,
       questions: questionSet.questions.map(question => ({
-        ...question,
+        id: question.id,
+        question: question.question,
+        option1: question.option1,
+        option2: question.option2,
+        option3: question.option3,
+        option4: question.option4,
+        answer: question.answer,
         createdAt: question.createdAt.toString(),
         updatedAt: question.updatedAt.toString(),
       })),
@@ -83,4 +82,3 @@ export default async function getQuestionSet(questionSetId?: number): Promise<Qu
     return null;
   }
 }
-

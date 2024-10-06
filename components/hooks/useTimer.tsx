@@ -49,7 +49,7 @@ const TimerDisplay = React.memo(({ seconds }: { seconds: number }) => {
 TimerDisplay.displayName = 'TimerDisplay';
 
 const Timer = () => {
-  const initialTime = 45 * 60; // 45 minutes in seconds
+  const initialTime = 10 * 60; // 45 minutes in seconds
 
   // Function to be triggered when the timer reaches 0
   const handleTimerEnd = () => {

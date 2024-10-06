@@ -19,47 +19,65 @@ enum AnswerOption {
   D
 }
 
+enum GradeOption {
+    GR3
+    GR7
+}
+
+enum TypeOption {
+    Islamic
+    Quran
+}
+
 model User {
-  id             Int       @id @default(autoincrement())
-  email          String    @unique
-  hashedPassword String    // Storing the hashed password
+  id             Int          @id @default(autoincrement())
+  email          String       @unique
+  hashedPassword String       // Storing the hashed password
   maiden         String
   sport          String
   color          String
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
-  role           UserRole  @default(USER)
+  role           UserRole     @default(USER)
 
-  profiles       Profile[] @relation("UserProfiles")
+  profiles       Profile[]    @relation("UserProfiles")
   questionSets   QuestionSet[] @relation("UserQuestionSets")
 }
 
 model Profile {
-  id         Int     @id @default(autoincrement())
+  id         Int         @id @default(autoincrement())
   firstName  String   
   lastName   String   
   school     String
   grade      String
-  code       String   @unique
+  code       String      @unique
   result     String?  
 
-  user       User    @relation("UserProfiles", fields: [userId], references: [id])
-  userId     Int     // Foreign key for User
+  user       User        @relation("UserProfiles", fields: [userId], references: [id])
+  userId     Int         // Foreign key for User
 
-  answers    Answer[]  // Relation to the answers given by the user
+  answerSets AnswerSet[] // Relation to AnswerSet
 }
 
 model QuestionSet {
-  id          Int        @id @default(autoincrement())
-  title       String     // Title or description of the question set
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id          Int          @id @default(autoincrement())
+  title       String       // Title or description of the question set
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
-  user        User       @relation("UserQuestionSets", fields: [userId], references: [id])
-  userId      Int        // Foreign key for User
+  user        User         @relation("UserQuestionSets", fields: [userId], references: [id])
+  userId      Int          // Foreign key for User
 
-  questions   Question[] @relation("SetQuestions")  // Relation to questions
+  questions   Question[]   @relation("SetQuestions")  // Relation to questions
+  answerSets  AnswerSet[]  // Relation to AnswerSets
+  results     Result[]     // Relation to Results (for each QuestionSet)
+
+  schedule    Schedule?     // Relation to Schedule
+
+  grade       GradeOption   @default(GR3)
+
+  type        TypeOption    @default(Quran)
 }
 
 model Question {
@@ -70,28 +88,59 @@ model Question {
   option3     String
   option4     String
   answer      AnswerOption
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
-  questionSet QuestionSet   @relation("SetQuestions", fields: [questionSetId], references: [id])
-  questionSetId Int         // Foreign key for QuestionSet
+  questionSet QuestionSet  @relation("SetQuestions", fields: [questionSetId], references: [id], onDelete: Cascade)
+  questionSetId Int        // Foreign key for QuestionSet
 
-  answers     Answer[]      @relation("QuestionAnswers") // Add relation to Answer
+  answers     Answer[]     @relation("QuestionAnswers") // Relation to Answer
 }
+
+model AnswerSet {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+
+  profile     Profile      @relation(fields: [profileId], references: [id])
+  profileId   Int          // Foreign key for Profile
+
+  questionSet QuestionSet  @relation(fields: [questionSetId], references: [id], onDelete: Cascade)
+  questionSetId Int        // Foreign key for QuestionSet
+
+  answers     Answer[]     @relation("AnswerSetAnswers") // Answers within this AnswerSet
+}
+
+// Remind me about deleting question set will not delete answer set
 
 model Answer {
   id          Int          @id @default(autoincrement())
-  option      AnswerOption 
+  option      AnswerOption
 
-  profile     Profile      @relation(fields: [profileId], references: [id])
-  profileId   Int          
+  answerSet   AnswerSet    @relation("AnswerSetAnswers", fields: [answerSetId], references: [id])
+  answerSetId Int          // Foreign key for AnswerSet
 
   question    Question     @relation("QuestionAnswers", fields: [questionId], references: [id])
-  questionId  Int          
+  questionId  Int          // Foreign key for Question
 }
 
 model Result {
   id          Int          @id @default(autoincrement())
-  school      Int          
-  allSchool   Int
+  score       Int          // Result score or value
+
+  questionSet QuestionSet  @relation(fields: [questionSetId], references: [id], onDelete: Cascade)
+  questionSetId Int        // Foreign key for QuestionSet
+
+  school      Int          // The result for a particular school (e.g., the average score)
+  allSchool   Int          // The result across all schools
+}
+
+model Schedule {
+  id            Int         @id @default(autoincrement())
+  startTime     DateTime    // When the test should start (date + time)
+  endTime       DateTime?   // Optional: When the test should end (date + time)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  questionSet   QuestionSet @relation(fields: [questionSetId], references: [id], onDelete: Cascade)
+  questionSetId Int         @unique // Foreign key for the test (QuestionSet)
 }
