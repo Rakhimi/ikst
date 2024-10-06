@@ -12,9 +12,6 @@ enum TypeOption {
   Quran = 'Quran'
 }
 
-
-
-
 interface Question {
   id: number;
   question: string;
@@ -48,17 +45,8 @@ interface QuestionSet {
 
 export default async function getQuestionSet(): Promise<QuestionSet[] | null> {
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser) {
-      return null;
-    }
-
-    // Fetch question sets along with schedule
+    // Fetch all question sets along with schedule
     const questionSets = await prisma.questionSet.findMany({
-      where: {
-        userId: currentUser.id, // Only fetch question sets owned by the current user
-      },
       select: {
         id: true,
         title: true,
@@ -95,7 +83,7 @@ export default async function getQuestionSet(): Promise<QuestionSet[] | null> {
     }));
 
   } catch (error) {
-    console.error("Error fetching question set:", error);
+    console.error("Error fetching question sets:", error);
     return null;
   }
 }

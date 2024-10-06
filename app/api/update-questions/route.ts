@@ -50,16 +50,6 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
         }
 
-        // Find the existing question set to make sure it belongs to the current user
-        const existingQuestionSet = await prisma.questionSet.findUnique({
-            where: { id },
-            include: { user: true },
-        });
-
-        if (!existingQuestionSet || existingQuestionSet.userId !== currentUser.id) {
-            return NextResponse.json({ error: "Not authorized to update this question set" }, { status: 403 });
-        }
-
         
 
         // Step 1: Upsert the questions (create or update)
