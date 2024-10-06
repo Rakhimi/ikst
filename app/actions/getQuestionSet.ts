@@ -1,5 +1,4 @@
 import prisma from "@/lib/prismadb";
-import getCurrentUser from "./getCurrentUser";
 
 // Define types
 enum GradeOption {
