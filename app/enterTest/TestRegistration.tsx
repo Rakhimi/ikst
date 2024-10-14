@@ -23,11 +23,16 @@ import { verifyCode } from '@/lib/verifyCode'; // Make sure this path is correct
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
+enum GradeOption {
+  GR3 = 'GR3',
+  GR7 = 'GR7'
+}
+
 type FormFields = {
   firstName: string;
   lastName: string;
   school: string;
-  grade: string;
+  grade: GradeOption
   profileId: string;
 };
 
@@ -52,20 +57,25 @@ const EnterTest = () => {
         data.grade,
         data.profileId
       );
-
+  
       if (result.errors) {
-        const error = result.errors
-        toast.error(error.key)
+        const error = result.errors;
+        toast.error(error.key);
       } else {
-        
-        router.push('/testList')
-        toast.success('Code verified')
+        // Assuming result contains user information and you want to access user.id
+        const userId = result.userId // Accessing user.id directly
+        console.log(userId); // Check the userId
+  
+        // Pass the userId to the router push
+        router.push(`/test/${data.grade}/${userId}`);
+        toast.success('Code verified');
       }
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Something wrong')
+      toast.error('Something went wrong');
     }
   };
+  
 
   return (
     <div className="my-10 flex flex-col items-center">
@@ -122,13 +132,13 @@ const EnterTest = () => {
             {/* Grade */}
             <div className="mb-5">
               <Label>Grade</Label>
-              <Select onValueChange={(value) => setValue('grade', value)} defaultValue="">
+              <Select onValueChange={(value) => setValue('grade', value as GradeOption)} defaultValue="">
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Grade" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="GR3">GR3</SelectItem>
-                  <SelectItem value="GR7">GR7</SelectItem>
+                  <SelectItem value={GradeOption.GR3}>GR3</SelectItem>
+                  <SelectItem value={GradeOption.GR7}>GR7</SelectItem>
                 </SelectContent>
               </Select>
               {errors.grade && (

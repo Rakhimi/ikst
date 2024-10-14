@@ -23,13 +23,6 @@ interface Question {
   updatedAt: string;
 }
 
-interface Schedule {
-  id: number;
-  startTime: string;
-  endTime: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
 
 interface QuestionSet {
   id: number;
@@ -37,9 +30,10 @@ interface QuestionSet {
   createdAt: string;
   updatedAt: string;
   questions: Question[];
-  schedule: Schedule | null; // Include the schedule as nullable
   grade: GradeOption;
   type: TypeOption;
+  startTime: string;
+    endTime: string;
 }
 
 export default async function getQuestionSet(): Promise<QuestionSet[] | null> {
@@ -53,15 +47,8 @@ export default async function getQuestionSet(): Promise<QuestionSet[] | null> {
         updatedAt: true,
         grade: true,
         type: true,
-        schedule: { // Include schedule in the query
-          select: {
-            id: true,
-            startTime: true,
-            endTime: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
+        startTime: true,
+        endTime: true, 
       },
     });
 
@@ -69,16 +56,11 @@ export default async function getQuestionSet(): Promise<QuestionSet[] | null> {
       ...set,
       createdAt: set.createdAt.toString(),
       updatedAt: set.updatedAt.toString(),
+      startTime: set.startTime.toISOString(),
+      endTime: set.endTime.toISOString(),
       questions: [], // Add an empty array for questions, as you're not selecting them yet
       grade: set.grade as GradeOption,
       type: set.type as TypeOption,
-      schedule: set.schedule ? {
-        ...set.schedule,
-        startTime: set.schedule.startTime.toString(),
-        endTime: set.schedule.endTime?.toString() || null,
-        createdAt: set.schedule.createdAt.toString(),
-        updatedAt: set.schedule.updatedAt.toString(),
-      } : null, // Safely handle the case when no schedule exists
     }));
 
   } catch (error) {

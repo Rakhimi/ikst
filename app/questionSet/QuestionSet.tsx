@@ -6,6 +6,18 @@ import { Button } from '@/components/ui/button';
 import toast from 'react-hot-toast';
 import axios from "axios";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 // Define the types based on your data structure
 
 enum GradeOption {
@@ -18,22 +30,15 @@ enum TypeOption {
   Quran='Quran'
 }
 
-interface Schedule {
-  id: number;
-  startTime: string;
-  endTime: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
 interface QuestionSet {
   id: number;
   title: string;
   createdAt: string;
   updatedAt: string;
-  schedule: Schedule | null;
   grade: GradeOption;
   type: TypeOption;
+  startTime: string;
+    endTime: string;
 }
 
 interface QuestionsReviewProps {
@@ -83,9 +88,6 @@ const QuestionSet: React.FC<QuestionsReviewProps> = ({ questionSets }) => {
       console.error('An error occurred while deleting the question set', error);
     }
   };
-
-
-
   if (questionSets === null) {
     return <div className='mt-20 text-2xl font-semibold'>No question sets available</div>;
   }
@@ -111,41 +113,33 @@ const QuestionSet: React.FC<QuestionsReviewProps> = ({ questionSets }) => {
               <h3 className="font-semibold text-xl">{set.grade}</h3>
               <p className="font-semibold text-xl">{set.type}</p>
               <p className="font-semibold text-gray-700">
-                Created at: {formatDate(set.createdAt)}
+                Start Time: {formatDate(set.startTime)}
+              </p>
+              <p className="font-semibold text-gray-700">
+                End Time: {formatDate(set.endTime)}
               </p>
             </div>
     
-            {/* Schedule and Action Buttons */}
             <div className="flex flex-col gap-4">
-              {/* Check if there is a schedule */}
-              {set.schedule ? (
-                // Display schedule if it exists
-                <div className="schedule-info bg-green-100 p-2 rounded-md">
-                  <h3 className="font-semibold text-lg">Scheduled:</h3>
-                  <p>Start: {formatDate(set.schedule.startTime)}</p>
-                  {set.schedule.endTime && (
-                    <p>End: {formatDate(set.schedule.endTime)}</p>
-                  )}
-                </div>
-              ) : (
-                // Show 'Set Schedule' button if no schedule exists
-                <Button
-                  onClick={() => {
-                    router.push(`/schedule/${set.id}`);
-                  }}
-                  className="bg-blue-500 text-white font-semibold hover:bg-blue-600"
-                >
-                  Set Schedule
-                </Button>
-              )}
-    
-              {/* Delete Question Set Button */}
-              <Button
-                onClick={() => deleteQuestionSet(set.id)}
-                className="bg-red-500 text-white font-semibold hover:bg-red-600"
-              >
-                Delete
+              <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button className="bg-red-500 text-white font-semibold hover:bg-red-600">
+                  Delete
               </Button>
+            </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete your registration
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => deleteQuestionSet(set.id)}>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>  
             </div>
           </div>
         ))}

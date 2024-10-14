@@ -21,18 +21,11 @@ export async function DELETE(request: Request) {
   
     const questionSet = await prisma.questionSet.findUnique({
       where: { id },
-      include: { schedule: true },  // Include related schedule
+
     });
 
     if (!questionSet) {
       return NextResponse.json({ error: 'Question set not found' }, { status: 404 });
-    }
-
-
-    if (questionSet.schedule) {
-      await prisma.schedule.delete({
-        where: { questionSetId: questionSet.id },
-      });
     }
 
     // Now, delete the QuestionSet

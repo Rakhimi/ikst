@@ -17,6 +17,7 @@ enum AnswerOption {
   B
   C
   D
+  UNANSWERED
 }
 
 enum GradeOption {
@@ -73,12 +74,14 @@ model QuestionSet {
   answerSets  AnswerSet[]  // Relation to AnswerSets
   results     Result[]     // Relation to Results (for each QuestionSet)
 
-  schedule    Schedule?     // Relation to Schedule
+  startTime   DateTime      @default("2024-01-01T00:00:00Z")
+  endTime     DateTime      @default("2024-01-01T00:00:00Z")    
 
-  grade       GradeOption   @default(GR3)
-
-  type        TypeOption    @default(Quran)
+  grade       GradeOption  @default(GR3)
+  type        TypeOption   @default(Quran)
+  completed    Boolean      @default(false)
 }
+
 
 model Question {
   id          Int          @id @default(autoincrement())
@@ -110,11 +113,9 @@ model AnswerSet {
   answers     Answer[]     @relation("AnswerSetAnswers") // Answers within this AnswerSet
 }
 
-// Remind me about deleting question set will not delete answer set
-
 model Answer {
   id          Int          @id @default(autoincrement())
-  option      AnswerOption
+  option      AnswerOption?
 
   answerSet   AnswerSet    @relation("AnswerSetAnswers", fields: [answerSetId], references: [id])
   answerSetId Int          // Foreign key for AnswerSet
@@ -132,15 +133,4 @@ model Result {
 
   school      Int          // The result for a particular school (e.g., the average score)
   allSchool   Int          // The result across all schools
-}
-
-model Schedule {
-  id            Int         @id @default(autoincrement())
-  startTime     DateTime    // When the test should start (date + time)
-  endTime       DateTime?   // Optional: When the test should end (date + time)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-
-  questionSet   QuestionSet @relation(fields: [questionSetId], references: [id], onDelete: Cascade)
-  questionSetId Int         @unique // Foreign key for the test (QuestionSet)
 }

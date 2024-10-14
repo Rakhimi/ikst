@@ -75,29 +75,17 @@ interface Answer {
 
 
 
-const Test: React.FC<TestProps> = ({ questionSet, profileId }) => {
+const QuranTest: React.FC<TestProps> = ({ questionSet, profileId }) => {
   const [answeredCount, setAnsweredCount] = useState<number>(0);
   const { control, watch } = useForm<Answer>();
   const router = useRouter();
-
-  const [firstMount, setFirstMount] = useState<boolean>(true);
-
-  const { formattedTime, seconds, resetTimer } = useCountdownTimer(300, handleTimeUp);
+  const { formattedTime, resetTimer } = useCountdownTimer(300, handleTimeUp);
 
   const watchAnswers = watch();
 
   useEffect(() => {
     setAnsweredCount(Object.values(watchAnswers).filter(Boolean).length);
   }, [watchAnswers]);
-
-  useEffect(() => {
-    // Reset the timer only if this is the first time the component is mounted
-    if (firstMount) {
-      resetTimer();  // Reset the timer to initial value (e.g., 60 seconds)
-      setFirstMount(false);  // Mark that the component has been mounted
-    }
-  }, [firstMount, resetTimer]);
-
 
   if (questionSet === null) {
     return <div className="mt-20 text-2xl font-semibold">No question sets available</div>;
@@ -112,17 +100,11 @@ const Test: React.FC<TestProps> = ({ questionSet, profileId }) => {
 
   const testing = ()=> {
     onSubmit(watchAnswers);
-    router.push(`/waitingRoom/${seconds}/${questionSet.grade}/${profileId}`);
   }
 
 
   function handleTimeUp() {
-    if (!questionSet) {
-      toast.error('Question set is not available');
-      return;
-    }
-    onSubmit(watchAnswers);
-    router.push(`/quranTest/${questionSet.grade}/${profileId}`);
+    onSubmit(watchAnswers); // Automatically submit when the timer ends
   }
 
   // Submit function
@@ -152,8 +134,8 @@ const Test: React.FC<TestProps> = ({ questionSet, profileId }) => {
       }
 
       toast.success('Submitted successfully');
-
-      
+      resetTimer();
+      router.push('/');
     } catch (error) {
       console.error('Error submitting answers:', error);
       toast.error('Failed to submit answers');
@@ -254,4 +236,4 @@ const Test: React.FC<TestProps> = ({ questionSet, profileId }) => {
   );
 };
 
-export default Test;
+export default QuranTest;

@@ -10,8 +10,6 @@ const Page: React.FC = async () => {
   const questionSets = await getQuestionSet();
 
 
-  
-
   if(questionSets) {
 
   return (

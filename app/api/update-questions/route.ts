@@ -34,6 +34,8 @@ interface FormValues {
   title: string;
   grade: GradeOption;
   type: TypeOption;
+  startTime: string; // We'll store it as a string, then combine date & time
+  endTime: string;
 }
 
 export async function POST(request: Request) {
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // Destructure questions and title from the request body
-    const { questions, title, id, grade, type }: FormValues & { id: number } = body;
+    const { questions, title, id, grade, type, startTime, endTime }: FormValues & { id: number } = body;
 
     // Get the current user (assuming this function gets user data from the session)
     const currentUser = await getCurrentUser();
@@ -78,11 +80,8 @@ export async function POST(request: Request) {
       })
     );
 
-    // Step 2: Extract the IDs of all upserted questions (newly created or updated)
     const updatedQuestionIds = updatedQuestions.map((q) => q.id);
 
-    // Step 3: Perform deleteMany to remove only questions that are not in the current list of updatedQuestionIds
-    // AND that belong to the current question set
     await prisma.question.deleteMany({
       where: {
         id: {
@@ -98,7 +97,9 @@ export async function POST(request: Request) {
       data: {
         title,
         grade,
-        type
+        type,
+        startTime,
+        endTime
       },
     });
 

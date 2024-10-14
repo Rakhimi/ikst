@@ -23,11 +23,17 @@ import { verifyCode } from '@/lib/verifyCode'; // Make sure this path is correct
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
+
+enum GradeOption {
+  GR3 = 'GR3',
+  GR7 = 'GR7'
+}
+
 type FormFields = {
   firstName: string;
   lastName: string;
   school: string;
-  grade: string;
+  grade: GradeOption
   profileId: string;
 };
 
@@ -122,7 +128,7 @@ const EnterResult = () => {
             {/* Grade */}
             <div className="mb-5">
               <Label>Grade</Label>
-              <Select onValueChange={(value) => setValue('grade', value)} defaultValue="">
+              <Select onValueChange={(value) => setValue('grade', value as GradeOption)} defaultValue="">
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Grade" />
                 </SelectTrigger>

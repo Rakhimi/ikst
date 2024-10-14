@@ -18,6 +18,24 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useRouter } from 'next/navigation';
 
+import { CalendarIcon } from '@radix-ui/react-icons';
+import { format } from 'date-fns';
+
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+  } from '@/components/ui/card';
+
+import { Calendar } from '@/components/ui/calendar';
+
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+  } from '@/components/ui/popover';
+
 enum AnswerOption {
     A = 'A',
     B = 'B',
@@ -51,6 +69,8 @@ interface FormValues {
     title: string;
     grade: GradeOption;
     type: TypeOption;
+    startTime: string; // We'll store it as a string, then combine date & time
+    endTime: string;
 }
 
 interface QuestionsProps {
@@ -58,7 +78,7 @@ interface QuestionsProps {
 }
 
 const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
-    const { register, control, watch, handleSubmit, reset } = useForm<FormValues>({
+    const { register, control, watch, handleSubmit, reset, formState: { errors }, } = useForm<FormValues>({
         defaultValues: initialData || {
             questions: [{ question: '', option1: '', option2: '', option3: '', option4: '', isAdded: false, answer: '' }],
             title: ''
@@ -66,6 +86,7 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
     });
 
     const [isLoading, setIsLoading] = useState(false);
+    const [date, setDate] = useState<Date>();
     const router = useRouter();
 
     const { fields, append, remove, update } = useFieldArray({
@@ -95,8 +116,6 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
         }
 
         const questionId = initialData?.questions[index]?.id ?? undefined;
-
-        console.log(questionId);
 
 
         const currentQuestion = fields[index];
@@ -132,23 +151,55 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
     
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
+        if (!date) {
+            toast.error('Please select a date');
+            return;
+        }
+    
+        // Clone the selected date for both start and end times
+        const startDateTime = new Date(date);
+        const endDateTime = new Date(date);
+    
+        // Extract hours and minutes from the startTime and endTime strings
+        const [startHour, startMinute] = data.startTime.split(':').map(Number);
+        const [endHour, endMinute] = data.endTime.split(':').map(Number);
+    
+        // Set the hours and minutes on the startDateTime and endDateTime objects
+        startDateTime.setHours(startHour, startMinute);
+        endDateTime.setHours(endHour, endMinute);
+    
+        // Update the data object to include the combined date and time as ISO strings
+        const updatedData = {
+            ...data,
+            startTime: startDateTime.toISOString(), // ISO-8601 formatted string
+            endTime: endDateTime.toISOString(),     // ISO-8601 formatted string
+        };
+    
         setIsLoading(true);
-
+    
         try {
             const endpoint = initialData ? '/api/update-questions' : '/api/create-questions';
-            console.log(data)
-            const result = await axios.post(endpoint, data);
+            console.log(updatedData);
+    
+            // Use the updatedData object in the request
+            const result = await axios.post(endpoint, updatedData);
             const id = result.data.id;
             toast.success('Questions submitted successfully!');
             router.push(`/questionsReview/${id}`);
             router.refresh();
-        } catch (error) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             console.error("Error submitting questions:", error);
-            toast.error('Failed to submit questions. Please try again.');
+            if (error.response && error.response.data && error.response.data.error) {
+                toast.error(error.response.data.error); // Show the specific error message
+            } else {
+                toast.error('Failed to submit questions. Please try again.');
+            }
         } finally {
             setIsLoading(false);
         }
     };
+    
 
     return (
         <div className="w-full mb-20">
@@ -198,6 +249,65 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
                     )}
                 />
                 </div>
+
+
+
+                <div className="my-10 flex flex-col">
+                <div className="w-1/3">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-center text-2xl">Set a date</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant={'outline'}
+                                    className={`${!date ? 'text-muted-foreground' : ''}`}
+                                >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {date ? format(date, 'PPP') : <span>Pick a date</span>}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    mode="single"
+                                    selected={date}
+                                    onSelect={setDate}
+                                    initialFocus
+                                />
+                            </PopoverContent>
+                        </Popover>
+
+                        {/* Start Time Input */}
+                        <div className="mt-10">
+                            <Label className="text-lg font-semibold">Start time</Label>
+                            <Input
+                                placeholder="Start time (e.g. 09:00)"
+                                {...register('startTime', { required: 'Start time is required' })}
+                            />
+                            {errors.startTime && (
+                                <span className="text-red-500">{errors.startTime.message}</span>
+                            )}
+                        </div>
+
+                        {/* End Time Input */}
+                        <div className="mt-10">
+                            <Label className="text-lg font-semibold">End time</Label>
+                            <Input
+                                placeholder="End time (e.g. 12:00)"
+                                {...register('endTime', { required: 'End time is required' })}
+                            />
+                            {errors.endTime && (
+                                <span className="text-red-500">{errors.endTime.message}</span>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+                </div>
+                </div>
+
+
 
                 <div className='mb-5'>
                     <Label className='font-semibold'>Make sure to fill everything including the correct answer</Label>
