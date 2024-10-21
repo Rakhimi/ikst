@@ -138,6 +138,14 @@ const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
                   Review questions
                 </a>
                 </DropdownMenuItem>
+                <DropdownMenuItem>
+                <a
+                  href="/resultList"
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/resultList') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+                >
+                  Result list
+                </a>
+                </DropdownMenuItem>
                 </>}
                 {session ? (
                   <>

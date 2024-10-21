@@ -28,10 +28,18 @@ enum GradeOption {
   GR7 = 'GR7'
 }
 
+enum SchoolOption {
+  ALSTX = 'ALSTX',
+  WDLTX = 'WDLTX',
+  BILTX = 'BILTX',
+  MCAMI = 'MCAMI',
+  MABIL = 'MABIL'
+}
+
 type FormFields = {
   firstName: string;
   lastName: string;
-  school: string;
+  school: SchoolOption;
   grade: GradeOption
   profileId: string;
 };
@@ -112,16 +120,16 @@ const EnterTest = () => {
             {/* School */}
             <div className="mb-5">
               <Label>School</Label>
-              <Select onValueChange={(value) => setValue('school', value)} defaultValue="">
+              <Select onValueChange={(value) => setValue('school', value as SchoolOption)} defaultValue="">
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select School" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ALSTX">AlSalam Spring TX</SelectItem>
-                  <SelectItem value="WDLTX">Woodland TX</SelectItem>
-                  <SelectItem value="BILTX">Bilal ISGH TX</SelectItem>
-                  <SelectItem value="MCAMI">MCA Ann Arbor</SelectItem>
-                  <SelectItem value="MABIL">MABIL</SelectItem>
+                  <SelectItem value={SchoolOption.ALSTX}>AlSalam Spring TX</SelectItem>
+                  <SelectItem value={SchoolOption.WDLTX}>Woodland TX</SelectItem>
+                  <SelectItem value={SchoolOption.BILTX}>Bilal ISGH TX</SelectItem>
+                  <SelectItem value={SchoolOption.MCAMI}>MCA Ann Arbor</SelectItem>
+                  <SelectItem value={SchoolOption.MABIL}>MABIL</SelectItem>
                 </SelectContent>
               </Select>
               {errors.school && (

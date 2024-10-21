@@ -1,6 +1,6 @@
 
 
-import MaxWidthWrapper from '@/components/MadWidthWrapper';
+import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import React from 'react'
 import getQuestionSet from '../actions/getQuestionSet'
 import QuestionSet from './QuestionSet';

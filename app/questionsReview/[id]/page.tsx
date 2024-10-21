@@ -1,4 +1,4 @@
-import MaxWidthWrapper from '@/components/MadWidthWrapper'
+import MaxWidthWrapper from '@/components/MaxWidthWrapper'
 import React from 'react'
 import QuestionsReview from '../QuestionsReview'
 import getQuestions from '../../actions/getQuestions'

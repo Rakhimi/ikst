@@ -126,6 +126,7 @@ const Test: React.FC<TestProps> = ({ questionSet, profileId }) => {
   }
 
   // Submit function
+  // Updated submit function
   const onSubmit: SubmitHandler<Answer> = async () => {
     try {
       const answers = Object.entries(watchAnswers).map(([key, value]) => ({
@@ -133,8 +134,19 @@ const Test: React.FC<TestProps> = ({ questionSet, profileId }) => {
         answer: value
       }));
 
-      console.log(answers);
+      // Calculate the score
+      let correctCount = 0;
+      questionSet.questions.forEach((question) => {
+        const userAnswer = watchAnswers[`question-${question.id}`];
+        if (userAnswer === question.answer) {
+          correctCount += 1;
+        }
+      });
 
+      const totalQuestions = questionSet.questions.length;
+      const score = (correctCount/totalQuestions) * 100
+
+      // Send the answers and the score to the API
       const response = await fetch('/api/submit-test', {
         method: 'POST',
         headers: {
@@ -144,6 +156,7 @@ const Test: React.FC<TestProps> = ({ questionSet, profileId }) => {
           profileId: Number(profileId),
           questionSetId: questionSet.id,
           answers: answers,
+          score: score, // Include the score in the payload
         }),
       });
 
@@ -153,12 +166,12 @@ const Test: React.FC<TestProps> = ({ questionSet, profileId }) => {
 
       toast.success('Submitted successfully');
 
-      
     } catch (error) {
       console.error('Error submitting answers:', error);
       toast.error('Failed to submit answers');
     }
   };
+
 
   return (
     <div>

@@ -1,6 +1,6 @@
 
 
-import MaxWidthWrapper from '@/components/MadWidthWrapper'
+import MaxWidthWrapper from '@/components/MaxWidthWrapper'
 import React from 'react'
 import QuranTest from '../QuranTest';
 import getQuranSet from '@/app/actions/getQuranSet';

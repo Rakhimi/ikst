@@ -37,11 +37,24 @@ interface RegisterExamProps {
   currentUser: CurrentUser | null;
 }
 
+enum GradeOption {
+  GR3 = 'GR3',
+  GR7 = 'GR7'
+}
+
+enum SchoolOption {
+  ALSTX = 'ALSTX',
+  WDLTX = 'WDLTX',
+  BILTX = 'BILTX',
+  MCAMI = 'MCAMI',
+  MABIL = 'MABIL'
+}
+
 type FormFields = {
   firstName: string;
   lastName:string;
-  school: string;
-  grade: string;
+  school: SchoolOption
+  grade: GradeOption
 };
 
 const RegisterExam: React.FC<RegisterExamProps> = ({ currentUser }) => {
@@ -137,18 +150,18 @@ const RegisterExam: React.FC<RegisterExamProps> = ({ currentUser }) => {
               <div className='mb-8'>
                 <Label>School</Label>
                 <Select
-                  onValueChange={(value) => setValue('school', value)}
+                  onValueChange={(value) => setValue('school', value as SchoolOption)}
                   defaultValue=""
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select School" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ALSTX">AlSalam Spring TX</SelectItem>
-                    <SelectItem value="WDLTX">Woodland TX</SelectItem>
-                    <SelectItem value="BILTX">Bilal ISGH TX</SelectItem>
-                    <SelectItem value="MCAMI">MCA Ann Arbor</SelectItem>
-                    <SelectItem value="MCAMI">MABIL</SelectItem>
+                    <SelectItem value={SchoolOption.ALSTX}>AlSalam Spring TX</SelectItem>
+                    <SelectItem value={SchoolOption.WDLTX}>Woodland TX</SelectItem>
+                    <SelectItem value={SchoolOption.BILTX}>Bilal ISGH TX</SelectItem>
+                    <SelectItem value={SchoolOption.MCAMI}>MCA Ann Arbor</SelectItem>
+                    <SelectItem value={SchoolOption.MABIL}>MABIL</SelectItem>
                   </SelectContent>
                 </Select>
                 {errors.school && (
@@ -160,15 +173,15 @@ const RegisterExam: React.FC<RegisterExamProps> = ({ currentUser }) => {
               <div className='mb-8'>
                 <Label>Grade</Label>
                 <Select
-                  onValueChange={(value) => setValue('grade', value)}
+                  onValueChange={(value) => setValue('grade', value as GradeOption)}
                   defaultValue=""
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select Grade" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="GR3">GR3</SelectItem>
-                    <SelectItem value="GR7">GR7</SelectItem>
+                    <SelectItem value={GradeOption.GR3}>GR3</SelectItem>
+                    <SelectItem value={GradeOption.GR7}>GR7</SelectItem>
                   </SelectContent>
                 </Select>
                 {errors.grade && (

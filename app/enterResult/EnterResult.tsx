@@ -19,9 +19,9 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { verifyCode } from '@/lib/verifyCode'; // Make sure this path is correct
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { verifyCodeResult } from '@/lib/verifyCodeResult';
 
 
 enum GradeOption {
@@ -29,10 +29,18 @@ enum GradeOption {
   GR7 = 'GR7'
 }
 
+enum SchoolOption {
+  ALSTX = 'ALSTX',
+  WDLTX = 'WDLTX',
+  BILTX = 'BILTX',
+  MCAMI = 'MCAMI',
+  MABIL = 'MABIL'
+}
+
 type FormFields = {
   firstName: string;
   lastName: string;
-  school: string;
+  school: SchoolOption;
   grade: GradeOption
   profileId: string;
 };
@@ -51,7 +59,7 @@ const EnterResult = () => {
   // Form submission handler
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
-      const result = await verifyCode(
+      const result = await verifyCodeResult(
         data.firstName,
         data.lastName,
         data.school,
@@ -64,7 +72,7 @@ const EnterResult = () => {
         toast.error(error.key)
       } else {
         
-        router.push('/result')
+        router.push(`/result/${result.userId}`)
         toast.success('Code verified')
       }
     } catch (error) {
@@ -108,16 +116,16 @@ const EnterResult = () => {
             {/* School */}
             <div className="mb-5">
               <Label>School</Label>
-              <Select onValueChange={(value) => setValue('school', value)} defaultValue="">
+              <Select onValueChange={(value) => setValue('school', value as SchoolOption)} defaultValue="">
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select School" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ALSTX">AlSalam Spring TX</SelectItem>
-                  <SelectItem value="WDLTX">Woodland TX</SelectItem>
-                  <SelectItem value="BILTX">Bilal ISGH TX</SelectItem>
-                  <SelectItem value="MCAMI">MCA Ann Arbor</SelectItem>
-                  <SelectItem value="MABIL">MABIL</SelectItem>
+                  <SelectItem value={SchoolOption.ALSTX}>AlSalam Spring TX</SelectItem>
+                  <SelectItem value={SchoolOption.WDLTX}>Woodland TX</SelectItem>
+                  <SelectItem value={SchoolOption.BILTX}>Bilal ISGH TX</SelectItem>
+                  <SelectItem value={SchoolOption.MCAMI}>MCA Ann Arbor</SelectItem>
+                  <SelectItem value={SchoolOption.MABIL}>MABIL</SelectItem>
                 </SelectContent>
               </Select>
               {errors.school && (

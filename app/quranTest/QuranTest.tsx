@@ -115,7 +115,16 @@ const QuranTest: React.FC<TestProps> = ({ questionSet, profileId }) => {
         answer: value
       }));
 
-      console.log(answers);
+      let correctCount = 0;
+      questionSet.questions.forEach((question) => {
+        const userAnswer = watchAnswers[`question-${question.id}`];
+        if (userAnswer === question.answer) {
+          correctCount += 1;
+        }
+      });
+
+      const totalQuestions = questionSet.questions.length;
+      const score = (correctCount/totalQuestions) * 100
 
       const response = await fetch('/api/submit-test', {
         method: 'POST',
@@ -126,6 +135,7 @@ const QuranTest: React.FC<TestProps> = ({ questionSet, profileId }) => {
           profileId: Number(profileId),
           questionSetId: questionSet.id,
           answers: answers,
+          score: score,
         }),
       });
 

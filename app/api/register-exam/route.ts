@@ -3,14 +3,28 @@ import prisma from "@/lib/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 
 // Define the type for the profile object
+enum GradeOption {
+  GR3 = 'GR3',
+  GR7 = 'GR7'
+}
+
+enum SchoolOption {
+  ALSTX = 'ALSTX',
+  WDLTX = 'WDLTX',
+  BILTX = 'BILTX',
+  MCAMI = 'MCAMI',
+  MABIL = 'MABIL'
+}
+
+
 type Profile = {
   id: number;
   createdAt: string;
   updatedAt: string;
   firstName: string;
-  lastName: string
-  school: string;
-  grade: string;
+  lastName: string;
+  school: SchoolOption;
+  grade: GradeOption;
   userId: number;
   code: string;
   result?: string;
@@ -34,12 +48,6 @@ export async function POST(request: Request) {
     }
     if (!lastName || typeof lastName !== 'string' || firstName.trim() === '') {
       return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
-    }
-    if (!school || typeof school !== 'string' || school.trim() === '') {
-      return NextResponse.json({ error: 'Invalid school' }, { status: 400 });
-    }
-    if (!grade || typeof grade !== 'string' || grade.trim() === '') {
-      return NextResponse.json({ error: 'Invalid grade' }, { status: 400 });
     }
 
     // Use a transaction to create a profile and update the user

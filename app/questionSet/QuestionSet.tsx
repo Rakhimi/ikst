@@ -1,10 +1,11 @@
 'use client'
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import toast from 'react-hot-toast';
 import axios from "axios";
+import { testCompleted } from '@/lib/testCompleted';
 
 import {
   AlertDialog,
@@ -62,6 +63,19 @@ const formatDate = (dateString: string) => {
 const QuestionSet: React.FC<QuestionsReviewProps> = ({ questionSets }) => {
 
   const router = useRouter();
+
+  useEffect(() => {
+    const checkTestCompletion = async () => {
+      try {
+        await testCompleted();
+        console.log('Test completion status checked');
+      } catch (error) {
+        console.error('Error checking test completion:', error);
+      }
+    };
+
+    checkTestCompletion();
+  }, []);
 
 
   const deleteQuestionSet = async (id: number) => {

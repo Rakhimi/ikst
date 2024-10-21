@@ -25,6 +25,14 @@ enum GradeOption {
     GR7
 }
 
+enum SchoolOption {
+  ALSTX
+  WDLTX
+  BILTX
+  MCAMI
+  MABIL
+}
+
 enum TypeOption {
     Islamic
     Quran
@@ -50,10 +58,9 @@ model Profile {
   id         Int         @id @default(autoincrement())
   firstName  String   
   lastName   String   
-  school     String
-  grade      String
-  code       String      @unique
-  result     String?  
+  school     SchoolOption @default(ALSTX)
+  grade      GradeOption @default(GR3)
+  code       String      @unique 
 
   user       User        @relation("UserProfiles", fields: [userId], references: [id])
   userId     Int         // Foreign key for User
@@ -111,6 +118,8 @@ model AnswerSet {
   questionSetId Int        // Foreign key for QuestionSet
 
   answers     Answer[]     @relation("AnswerSetAnswers") // Answers within this AnswerSet
+
+  result      Int?
 }
 
 model Answer {
@@ -131,6 +140,6 @@ model Result {
   questionSet QuestionSet  @relation(fields: [questionSetId], references: [id], onDelete: Cascade)
   questionSetId Int        // Foreign key for QuestionSet
 
-  school      Int          // The result for a particular school (e.g., the average score)
+  school     SchoolOption
   allSchool   Int          // The result across all schools
 }

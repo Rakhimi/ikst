@@ -1,6 +1,6 @@
 import React from 'react';
 import Questions from './Questions';
-import MaxWidthWrapper from '@/components/MadWidthWrapper';
+import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 
 const Page = async ({ searchParams }: { searchParams: { initialData: string } }) => {
   

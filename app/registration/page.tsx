@@ -1,6 +1,6 @@
 import React from 'react'
 import Registration from './Registration'
-import MaxWidthWrapper from "@/components/MadWidthWrapper";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 
 const RegistrationPage = async () => {
 

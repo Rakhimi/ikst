@@ -1,5 +1,5 @@
 import React from 'react'
-import MaxWidthWrapper from '@/components/MadWidthWrapper'
+import MaxWidthWrapper from '@/components/MaxWidthWrapper'
 import EnterTest from './TestRegistration'
 
 const page = () => {

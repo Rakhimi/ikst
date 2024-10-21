@@ -1,6 +1,6 @@
 import React from 'react'
-import MaxWidthWrapper from '@/components/MadWidthWrapper'
-import Result from './Result'
+import MaxWidthWrapper from '@/components/MaxWidthWrapper'
+import ResultList from './ResultList'
 
 const page = () => {
 
@@ -8,7 +8,7 @@ const page = () => {
   return (
     <div>
     <MaxWidthWrapper>
-    <Result/>
+    <ResultList/>
     </MaxWidthWrapper>
     </div>
   )

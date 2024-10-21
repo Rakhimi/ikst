@@ -1,6 +1,6 @@
 
 import React from 'react'
-import MaxWidthWrapper from "@/components/MadWidthWrapper";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import RegisterExam from './RegisterExam';
 import getCurrentUser from '../actions/getCurrentUser';
 

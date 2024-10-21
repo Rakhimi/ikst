@@ -10,7 +10,7 @@ interface Answer {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { profileId, questionSetId, answers }: { profileId: number, questionSetId: number, answers: Answer[] } = body;
+    const { profileId, questionSetId, answers, score }: { profileId: number, questionSetId: number, answers: Answer[], score: number } = body;
 
     // Ensure the answers array exists
     if (!answers) {
@@ -20,8 +20,9 @@ export async function POST(request: Request) {
     // Create the AnswerSet
     const answerSet = await prisma.answerSet.create({
       data: {
-        profileId,  // Use profileId from the request body
-        questionSetId,  // Use questionSetId from the request body
+        profileId,
+        questionSetId,
+        result:score,
         answers: {
           create: answers.map(({ questionId, answer }: Answer) => ({
             option: answer || AnswerOption.UNANSWERED,  // Use NO_ANSWER if no answer is provided
