@@ -12,6 +12,13 @@ enum TypeOption {
   Quran = 'Quran'
 }
 
+enum AnswerOption {
+  A = 'A',
+  B = 'B',
+  C = 'C',
+  D = 'D',
+}
+
 interface Question {
   id: number;
   question: string;
@@ -19,9 +26,10 @@ interface Question {
   option2: string;
   option3: string;
   option4: string;
-  answer: string;  // This can be a string or enum depending on how Prisma is set up
+  answer: AnswerOption;
   createdAt: string;
   updatedAt: string;
+  isAdded: boolean;
 }
 
 interface QuestionSet {
@@ -32,6 +40,8 @@ interface QuestionSet {
   questions: Question[];
   grade: GradeOption;
   type: TypeOption;
+  startTime: string; // We'll store it as a string, then combine date & time
+  endTime: string;
 }
 
 export default async function getQuestions(questionSetId?: number): Promise<QuestionSet | null> {
@@ -65,6 +75,8 @@ export default async function getQuestions(questionSetId?: number): Promise<Ques
       updatedAt: questionSet.updatedAt.toString(),
       grade: questionSet.grade as GradeOption,
       type: questionSet.type as TypeOption,
+      startTime: questionSet.startTime.toISOString(),
+      endTime: questionSet.endTime.toISOString(),
       questions: questionSet.questions.map(question => ({
         id: question.id,
         question: question.question,
@@ -72,7 +84,8 @@ export default async function getQuestions(questionSetId?: number): Promise<Ques
         option2: question.option2,
         option3: question.option3,
         option4: question.option4,
-        answer: question.answer,
+        answer: question.answer as AnswerOption,
+        isAdded: true,
         createdAt: question.createdAt.toString(),
         updatedAt: question.updatedAt.toString(),
       })),

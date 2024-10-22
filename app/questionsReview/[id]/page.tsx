@@ -16,7 +16,7 @@ const page = async ({ params }: { params: { id: number}}) => {
   return (
     <div>
         <MaxWidthWrapper>
-          <QuestionsReview questionSet={questionSet}/>
+          <QuestionsReview questionSet={questionSet} id={id}/>
         </MaxWidthWrapper>
     </div>
   )

@@ -74,7 +74,7 @@ interface FormValues {
 }
 
 interface QuestionsProps {
-    initialData?: FormValues; // Accept initial data as props
+    initialData?: FormValues;
 }
 
 const Questions: React.FC<QuestionsProps> = ({ initialData }) => {

@@ -40,9 +40,10 @@ interface QuestionSet {
 
 interface QuestionsReviewProps {
   questionSet: QuestionSet[] | QuestionSet | null;
+  id :number;
 }
 
-const QuestionsReview: React.FC<QuestionsReviewProps> = ({ questionSet }) => {
+const QuestionsReview: React.FC<QuestionsReviewProps> = ({ questionSet, id }) => {
   const router = useRouter();
 
   // Handle null case
@@ -64,10 +65,9 @@ const QuestionsReview: React.FC<QuestionsReviewProps> = ({ questionSet }) => {
 
   // Navigate to edit mode with initial data
   const navigateToEdit = () => {
+
     
-    const initialData = encodeURIComponent(JSON.stringify(questionSet));
-    
-    router.push(`/questions?initialData=${initialData}`);
+    router.push(`/questions/${id}`);
   };
 
   return (
