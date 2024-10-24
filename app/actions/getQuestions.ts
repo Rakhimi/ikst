@@ -85,7 +85,7 @@ export default async function getQuestions(questionSetId?: number): Promise<Ques
         option3: question.option3,
         option4: question.option4,
         answer: question.answer as AnswerOption,
-        isAdded: true,
+        isAdded: false,
         createdAt: question.createdAt.toString(),
         updatedAt: question.updatedAt.toString(),
       })),

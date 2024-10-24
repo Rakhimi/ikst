@@ -60,7 +60,6 @@ interface Question {
     option2: string;
     option3: string;
     option4: string;
-    isAdded: boolean;
     answer: AnswerOption | '';
 }
 
@@ -74,13 +73,13 @@ interface FormValues {
 }
 
 interface QuestionsProps {
-    initialData?: FormValues;
+    initialData: FormValues;
 }
 
 const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
     const { register, control, watch, handleSubmit, reset, formState: { errors }, } = useForm<FormValues>({
         defaultValues: initialData || {
-            questions: [{ question: '', option1: '', option2: '', option3: '', option4: '', isAdded: false, answer: '' }],
+            questions: [{ question: '', option1: '', option2: '', option3: '', option4: '', answer: '' }],
             title: ''
         },
     });
@@ -115,10 +114,11 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
             return;
         }
 
-        const questionId = initialData?.questions[index]?.id ?? undefined;
+        
 
 
         const currentQuestion = fields[index];
+        const updatedId = Number(currentQuestion.id)
         const updatedQuestion = {
             ...currentQuestion,
             question,
@@ -128,8 +128,7 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
             option4,
             answer,
             isAdded: true,
-            
-            ...(questionId && { id: questionId }),
+            id: updatedId
         };
     
         console.log(updatedQuestion);
@@ -144,7 +143,6 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
             option2: '', 
             option3: '', 
             option4: '', 
-            isAdded: false, 
             answer: '' 
         });
     };
@@ -171,18 +169,16 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
         // Update the data object to include the combined date and time as ISO strings
         const updatedData = {
             ...data,
-            startTime: startDateTime.toISOString(), // ISO-8601 formatted string
-            endTime: endDateTime.toISOString(),     // ISO-8601 formatted string
+            startTime: data.startTime, 
+            endTime: data.endTime   
         };
     
         setIsLoading(true);
     
         try {
-            const endpoint = initialData ? '/api/update-questions' : '/api/create-questions';
-            console.log(updatedData);
     
             // Use the updatedData object in the request
-            const result = await axios.post(endpoint, updatedData);
+            const result = await axios.post('/api/update-questions', updatedData);
             const id = result.data.id;
             toast.success('Questions submitted successfully!');
             router.push(`/questionsReview/${id}`);
@@ -316,7 +312,7 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
                 {fields.length === 0 ? (
                     <div className="flex justify-center py-4">
                         <button
-                            onClick={() => append({ question: '', option1: '', option2: '', option3: '', option4: '', isAdded: false, answer: '' })}
+                            onClick={() => append({ question: '', option1: '', option2: '', option3: '', option4: '', answer: '' })}
                             className="text-sky-500 font-bold px-2"
                         >
                             <FaPlusCircle className='text-3xl' />
