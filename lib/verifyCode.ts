@@ -3,7 +3,7 @@
 import prisma from "@/lib/prismadb";
 import getIslamicSet from "@/app/actions/getIslamicSet";
 
-interface VerifyResult {
+interface VerifyCode {
     userId?: number; 
     errors?: { [key: string]: string };  // Error messages for each field
 }
@@ -21,7 +21,7 @@ enum SchoolOption {
     MABIL = 'MABIL'
   }
 
-export async function verifyCode(firstName: string, lastName: string, school: SchoolOption, grade: GradeOption, profileId: string): Promise<VerifyResult> {
+export async function verifyCode(firstName: string, lastName: string, school: SchoolOption, grade: GradeOption, profileId: string): Promise<VerifyCode> {
     try {
         // Fetch the user's stored secret answers based on the email
         const user = await prisma.profile.findUnique({
@@ -35,7 +35,7 @@ export async function verifyCode(firstName: string, lastName: string, school: Sc
         });
 
         if (!user) {
-            return { errors: { email: "Email not found" } };
+            return { errors: { email: "Wrong credentials data" } };
         }
 
         // Fetch the Islamic question set for the grade

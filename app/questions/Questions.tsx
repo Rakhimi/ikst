@@ -169,8 +169,8 @@ const Questions: React.FC<QuestionsProps> = ({ initialData }) => {
         // Update the data object to include the combined date and time as ISO strings
         const updatedData = {
             ...data,
-            startTime: data.startTime, 
-            endTime: data.endTime   
+            startTime: startDateTime.toISOString(), // ISO-8601 formatted string
+            endTime: endDateTime.toISOString(),   
         };
     
         setIsLoading(true);

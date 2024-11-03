@@ -1,10 +1,10 @@
 'use client'
 
-import React from 'react'
-import { SessionProvider } from 'next-auth/react'
-import Navbar from './Navbar'
+import React from 'react';
+import { SessionProvider } from 'next-auth/react';
+import Navbar from './Navbar';
+import { usePathname } from 'next/navigation';
 import { $Enums } from '@prisma/client';
-
 
 interface UserProps {
   createdAt: string;
@@ -19,18 +19,22 @@ interface UserProps {
 }
 
 interface CurrentProps {
-  currentUser: Promise<UserProps | null>;
+  currentUser: UserProps | null;
 }
-
 
 const Nav: React.FC<CurrentProps> = ({ currentUser }) => {
+  const pathname = usePathname();
+
+  // Hide the Navbar if the pathname includes /quranTest or /test
+  const hideNavbar = pathname.includes('/quranTest') || pathname.includes('/test') || pathname.includes('/waitingRoom')
+
   return (
     <div>
-        <SessionProvider>
-            <Navbar currentUser={currentUser}/>
-        </SessionProvider>
+      <SessionProvider>
+        {!hideNavbar && <Navbar currentUser={currentUser} />}
+      </SessionProvider>
     </div>
-  )
+  );
 }
 
-export default Nav
+export default Nav;

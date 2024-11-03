@@ -117,7 +117,7 @@ model AnswerSet {
   questionSet QuestionSet  @relation(fields: [questionSetId], references: [id], onDelete: Cascade)
   questionSetId Int        // Foreign key for QuestionSet
 
-  answers     Answer[]     @relation("AnswerSetAnswers") // Answers within this AnswerSet
+  answers     Answer[]     @relation("AnswerSetAnswers")
 
   result      Int?
 }
@@ -126,7 +126,7 @@ model Answer {
   id          Int          @id @default(autoincrement())
   option      AnswerOption?
 
-  answerSet   AnswerSet    @relation("AnswerSetAnswers", fields: [answerSetId], references: [id])
+  answerSet   AnswerSet    @relation("AnswerSetAnswers", fields: [answerSetId], references: [id], onDelete: Cascade)
   answerSetId Int          // Foreign key for AnswerSet
 
   question    Question     @relation("QuestionAnswers", fields: [questionId], references: [id])

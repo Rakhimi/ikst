@@ -80,23 +80,13 @@ const Test: React.FC<TestProps> = ({ questionSet, profileId }) => {
   const { control, watch } = useForm<Answer>();
   const router = useRouter();
 
-  const [firstMount, setFirstMount] = useState<boolean>(true);
-
-  const { formattedTime, seconds, resetTimer } = useCountdownTimer(300, handleTimeUp);
+  const { formattedTime, seconds } = useCountdownTimer(300, handleTimeUp);
 
   const watchAnswers = watch();
 
   useEffect(() => {
     setAnsweredCount(Object.values(watchAnswers).filter(Boolean).length);
   }, [watchAnswers]);
-
-  useEffect(() => {
-    // Reset the timer only if this is the first time the component is mounted
-    if (firstMount) {
-      resetTimer();  // Reset the timer to initial value (e.g., 60 seconds)
-      setFirstMount(false);  // Mark that the component has been mounted
-    }
-  }, [firstMount, resetTimer]);
 
 
   if (questionSet === null) {

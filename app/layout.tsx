@@ -9,7 +9,6 @@ import ToasterProvider from "@/components/ToasterProvider";
 import Nav from "@/components/Navbar/Nav";
 import getCurrentUser from "./actions/getCurrentUser";
 
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -26,15 +25,13 @@ export const metadata: Metadata = {
   description: "IKST",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
 
-  const currentUser = getCurrentUser();
-
-
+  const currentUser = await getCurrentUser();
 
   return (
     <html lang="en">
@@ -42,11 +39,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ModalProvider>
-        <ToasterProvider/>
-        <RegisterModal/>
-        <LoginModal/>
-        <Nav currentUser={currentUser}/>
-        {children}
+          <ToasterProvider />
+          <RegisterModal />
+          <LoginModal />
+          <Nav currentUser={currentUser}/>
+          {children}
         </ModalProvider>
       </body>
     </html>

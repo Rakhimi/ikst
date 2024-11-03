@@ -23,6 +23,8 @@ import { verifyCode } from '@/lib/verifyCode'; // Make sure this path is correct
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
+import { useCountdownTimer } from '@/components/hooks/useTimer';
+
 enum GradeOption {
   GR3 = 'GR3',
   GR7 = 'GR7'
@@ -55,9 +57,18 @@ const EnterTest = () => {
 
   const router = useRouter();
 
+  const handleTimeUp = ()=> {
+    console.log('reset time')
+  }
+
+  const { resetTimer } = useCountdownTimer(300, handleTimeUp);
+
   // Form submission handler
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
+
+      console.log(data)
+
       const result = await verifyCode(
         data.firstName,
         data.lastName,
@@ -67,14 +78,18 @@ const EnterTest = () => {
       );
   
       if (result.errors) {
-        const error = result.errors;
-        toast.error(error.key);
+        for (const key in result.errors) {
+          if (result.errors[key]) {
+              console.log(`Error for ${key}: ${result.errors[key]}`);
+              toast.error(result.errors[key]);  // Display each error
+          }
+      }
       } else {
         // Assuming result contains user information and you want to access user.id
         const userId = result.userId // Accessing user.id directly
         console.log(userId); // Check the userId
   
-        // Pass the userId to the router push
+        resetTimer();
         router.push(`/test/${data.grade}/${userId}`);
         toast.success('Code verified');
       }

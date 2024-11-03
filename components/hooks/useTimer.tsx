@@ -2,17 +2,27 @@ import { useState, useEffect } from 'react';
 
 // Custom hook for countdown timer logic
 export const useCountdownTimer = (initialTime: number, onTimerEnd: () => void) => {
-  const [seconds, setSeconds] = useState<number>(() => {
-    const savedTime = localStorage.getItem('timer');
-    return savedTime ? parseInt(savedTime, 10) : initialTime;
-  });
-
+  const [seconds, setSeconds] = useState<number>(initialTime);
   const [isActive, setIsActive] = useState(true);
+
+  // Retrieve the saved time from localStorage on initial render
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedTime = localStorage.getItem('timer');
+      if (savedTime) {
+        setSeconds(parseInt(savedTime, 10));
+      } else {
+        localStorage.setItem('timer', initialTime.toString());
+      }
+    }
+  }, [initialTime]);
 
   const resetTimer = () => {
     setSeconds(initialTime);
     setIsActive(true);
-    localStorage.setItem('timer', initialTime.toString());
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('timer', initialTime.toString());
+    }
   };
 
   useEffect(() => {
@@ -22,13 +32,17 @@ export const useCountdownTimer = (initialTime: number, onTimerEnd: () => void) =
       interval = setInterval(() => {
         setSeconds((prevSeconds) => {
           const newSeconds = prevSeconds - 1;
-          localStorage.setItem('timer', newSeconds.toString());
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('timer', newSeconds.toString());
+          }
           return newSeconds;
         });
       }, 1000);
     } else if (seconds === 0) {
       setIsActive(false);
-      localStorage.removeItem('timer');
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('timer');
+      }
       onTimerEnd();
     }
 
@@ -44,4 +58,3 @@ export const useCountdownTimer = (initialTime: number, onTimerEnd: () => void) =
 
   return { formattedTime: formatTime(seconds), seconds, isActive, resetTimer };
 };
-

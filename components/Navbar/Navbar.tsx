@@ -30,7 +30,7 @@ interface UserProps {
 }
 
 interface CurrentProps {
-  currentUser: Promise<UserProps | null>;
+  currentUser: UserProps | null; 
 }
 
 const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
@@ -47,9 +47,7 @@ const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
   };
 
   useEffect(() => {
-    currentUser.then((resolvedUser) => {
-      setUser(resolvedUser);
-    });
+    setUser(currentUser);
   }, [currentUser]);
 
   const isActive = (path: string) => pathname === path;

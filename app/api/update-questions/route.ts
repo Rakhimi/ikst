@@ -91,6 +91,9 @@ export async function POST(request: Request) {
       },
     });
 
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
+
     // Step 4: Update the questionSet (if needed)
     const updatedQuestionSet = await prisma.questionSet.update({
       where: { id },  // Where clause for the question set
@@ -98,8 +101,8 @@ export async function POST(request: Request) {
         title,
         grade,
         type,
-        startTime,
-        endTime
+        startTime: startDate,
+        endTime: endDate
       },
     });
 
