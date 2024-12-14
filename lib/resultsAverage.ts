@@ -30,18 +30,6 @@ export async function resultAverage() {
         // Process each QuestionSet
         const result = await Promise.all(questionSets.map(async (questionSet) => {
             try {
-                // Check if results already exist for this QuestionSet
-                const existingResults = await prisma.result.findMany({
-                    where: {
-                        questionSetId: questionSet.id,
-                    },
-                });
-
-                if (existingResults.length > 0) {
-                    console.log(`Results already exist for QuestionSet ID: ${questionSet.id}. Skipping recalculation.`);
-                    return { success: true, questionSetId: questionSet.id, message: "Already calculated" };
-                }
-
                 console.log(`Processing QuestionSet ID: ${questionSet.id}`);  // Debugging
 
                 // Fetch all AnswerSets for this QuestionSet
@@ -91,17 +79,29 @@ export async function resultAverage() {
                 // Create new results for each school
                 await Promise.all(schoolAverages.map(async (schoolAverage) => {
                     try {
-                        // Create a new result entry for the school average
-                        await prisma.result.create({
-                            data: {
+                        // Check if a result for this school already exists
+                        const existingResult = await prisma.result.findFirst({
+                            where: {
                                 questionSetId: questionSet.id,
                                 school: schoolAverage.school,
-                                score: schoolAverage.averageScore,  // Set the school average score
-                                allSchool: overallAverage,  // Set the all-school average score
                             },
                         });
 
-                        console.log(`Created result for school ${schoolAverage.school} in QuestionSet ID ${questionSet.id}`);
+                        if (existingResult) {
+                            console.log(`Result already exists for school ${schoolAverage.school} in QuestionSet ID ${questionSet.id}. Skipping creation.`);                            
+                        } else {
+                            // Create a new result entry for the school average
+                            await prisma.result.create({
+                                data: {
+                                    questionSetId: questionSet.id,
+                                    school: schoolAverage.school,
+                                    score: schoolAverage.averageScore,  // Set the school average score
+                                    allSchool: overallAverage,  // Set the all-school average score
+                                },
+                            });
+
+                            console.log(`Created result for school ${schoolAverage.school} in QuestionSet ID ${questionSet.id}`);
+                        }
                     } catch (err) {
                         console.error(`Error creating result for school ${schoolAverage.school}:`, err);
                         throw err;  // Ensure failure is handled
@@ -112,7 +112,7 @@ export async function resultAverage() {
 
             } catch (error) {
                 console.error(`Error processing QuestionSet ID ${questionSet.id}:`, error);
-                return { success: false, questionSetId: questionSet.id, error: 'error'};
+                return { success: false, questionSetId: questionSet.id, error: 'error' };
             }
         }));
 

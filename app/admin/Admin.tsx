@@ -25,6 +25,7 @@ interface Profile {
   grade: string;
   userId: number;
   code: string;
+  answerCount: number;
 }
 
 interface Listings {
@@ -34,6 +35,7 @@ interface Listings {
   email: string;
   hashedPassword: string;
   updatedAt: string; 
+  
 }
 
 interface AdminProps {
@@ -45,6 +47,8 @@ const Admin: React.FC<AdminProps> = ({ listings }) => {
   const [profiles, setProfiles] = useState<Profile[]>(listings.flatMap(listing => listing.profiles));
 
   const router = useRouter();
+
+  
 
   const deleteProfile = async (id: number) => {
     try {
@@ -89,6 +93,9 @@ const Admin: React.FC<AdminProps> = ({ listings }) => {
         </thead>
         <tbody className='bg-white divide-y divide-gray-200'>
         {profiles.map(profile => (
+
+            
+
             <tr key={profile.id}>
               <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                 {listings.find(listing => listing.profiles.some(p => p.id === profile.id))?.email || 'Unknown'}
@@ -102,7 +109,11 @@ const Admin: React.FC<AdminProps> = ({ listings }) => {
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                 <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button className="bg-red-500 text-white font-semibold hover:bg-red-600">
+                <Button className={`${profile.answerCount === 0
+                  ? 'bg-red-500 hover:bg-red-600'
+                  : profile.answerCount === 1
+                  ? 'bg-sky-500 hover:bg-sky-600'
+                  : 'bg-green-500 hover:bg-green-600'} text-white font-semibold`}>
                     Delete
                 </Button>
               </AlertDialogTrigger>

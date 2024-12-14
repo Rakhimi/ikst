@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import { $Enums } from '@prisma/client';
 import { BsPersonCircle } from "react-icons/bs";
 
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -138,10 +139,18 @@ const Navbar: React.FC<CurrentProps> = ({ currentUser }) => {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                 <a
-                  href="/resultList"
+                  href="/resultSetList"
                   className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/resultList') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
                 >
                   Result list
+                </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                <a
+                  href="/completedQuestionSet"
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/completedQuestionSet') ? 'bg-gray-900 text-white' : 'hover:bg-gray-200'}`}
+                >
+                  Completed Question Set
                 </a>
                 </DropdownMenuItem>
                 </>}

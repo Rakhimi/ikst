@@ -17,15 +17,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Answers are missing" }, { status: 400 });
     }
 
+    // Check if an AnswerSet already exists for this profileId and questionSetId
+    const existingAnswerSet = await prisma.answerSet.findFirst({
+      where: {
+        profileId,
+        questionSetId,
+      },
+    });
+
+    if (existingAnswerSet) {
+      return NextResponse.json({ error: "An AnswerSet already exists for this QuestionSet and Profile." }, { status: 400 });
+    }
+
     // Create the AnswerSet
     const answerSet = await prisma.answerSet.create({
       data: {
         profileId,
         questionSetId,
-        result:score,
+        result: score,
         answers: {
           create: answers.map(({ questionId, answer }: Answer) => ({
-            option: answer || AnswerOption.UNANSWERED,  // Use NO_ANSWER if no answer is provided
+            option: answer || AnswerOption.UNANSWERED,  // Use UNANSWERED if no answer is provided
             question: {
               connect: {
                 id: parseInt(questionId, 10),  // Convert questionId to an integer if necessary

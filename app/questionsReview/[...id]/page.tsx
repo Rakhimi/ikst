@@ -4,10 +4,10 @@ import QuestionsReview from '../QuestionsReview'
 import getQuestions from '../../actions/getQuestions'
 
 
-const page = async ({ params }: { params: { id: number}}) => {
+const page = async ({ params }: { params: { id: [number, boolean] }}) => {
 
   
-  const { id } = params;
+  const [id, completed] = params.id;
 
   const questionSet = await getQuestions(Number(id));
 
@@ -16,7 +16,7 @@ const page = async ({ params }: { params: { id: number}}) => {
   return (
     <div>
         <MaxWidthWrapper>
-          <QuestionsReview questionSet={questionSet} id={id}/>
+          <QuestionsReview questionSet={questionSet} id={id} completed={completed}/>
         </MaxWidthWrapper>
     </div>
   )

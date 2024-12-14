@@ -5,26 +5,34 @@ export default async function getListings() {
   try {
     // Fetch current user
     const currentUser = await getCurrentUser();
-    
+
     if (!currentUser) {
       return [];
     }
 
-    // Fetch users with their profiles (if available)
+    // Fetch users with their profiles and answer sets
     const usersWithProfiles = await prisma.user.findMany({
       orderBy: {
         createdAt: 'asc',
       },
       include: {
-        profiles: true, // Include the profile if it exists
+        profiles: {
+          include: {
+            answerSets: true, // Include the answer sets for the profile
+          },
+        },
       },
     });
 
-    // Map the results to ensure proper formatting
+    // Map the results to include the count of answer sets
     const safeUsers = usersWithProfiles.map((user) => ({
       ...user,
       createdAt: user.createdAt.toString(),
       updatedAt: user.updatedAt.toString(),
+      profiles: user.profiles.map((profile) => ({
+        ...profile,
+        answerCount: profile.answerSets.length, // Count of answer sets
+      })),
     }));
 
     return safeUsers;

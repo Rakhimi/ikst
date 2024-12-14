@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import toast from 'react-hot-toast';
 import axios from "axios";
 import { testCompleted } from '@/lib/testCompleted';
+import { cycle } from '@/lib/cycle';
 
 import {
   AlertDialog,
@@ -68,6 +69,7 @@ const QuestionSet: React.FC<QuestionsReviewProps> = ({ questionSets }) => {
     const checkTestCompletion = async () => {
       try {
         await testCompleted();
+        await cycle();
         console.log('Test completion status checked');
       } catch (error) {
         console.error('Error checking test completion:', error);
@@ -120,7 +122,7 @@ const QuestionSet: React.FC<QuestionsReviewProps> = ({ questionSets }) => {
             <div
               className="question-set p-2 bg-gray-100 border rounded-md w-1/3 hover:bg-gray-200 cursor-pointer"
               onClick={() => {
-                router.push(`/questionsReview/${set.id}`);
+                router.push(`/questionsReview/${set.id}/${false}`);
               }}
             >
               <h2 className="font-semibold text-xl">{set.title}</h2>
