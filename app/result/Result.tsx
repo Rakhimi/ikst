@@ -8,6 +8,7 @@ import {
     CardTitle,
     CardFooter
 } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
 import { TypeOption } from '@prisma/client';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -48,7 +49,10 @@ const ProfileResult: React.FC<ProfileResultProps> = ({ profile, results, average
         const element = componentRef.current;
         if (!element) return;
 
-        const canvas = await html2canvas(element);
+        const canvas = await html2canvas(element, {
+            scale: 2, // Increase scale for higher resolution
+            backgroundColor: '#ffffff', // Force background color to white
+        });
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -59,15 +63,15 @@ const ProfileResult: React.FC<ProfileResultProps> = ({ profile, results, average
     };
 
     return (
-        <div className="mt-10">
-            <button
+        <div className="mt-10 bg-white">
+            <Button
                 onClick={generatePDF}
-                className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
+                className='m-2'
             >
                 Download PDF
-            </button>
-            <div ref={componentRef}>
-                <Card>
+            </Button>
+            <div ref={componentRef} style={{ backgroundColor: 'white' }}>
+                <Card className='bg-white'>
                     <CardHeader className="text-xl">
                         <CardTitle className="mb-2 text-2xl">Grade Report IKST</CardTitle>
                         <CardTitle>{profile.firstName} {profile.lastName}</CardTitle>
