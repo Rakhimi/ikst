@@ -1,13 +1,14 @@
 import prisma from "@/lib/prismadb";
 import getCurrentUser from "./getCurrentUser";
 
-export default async function getUsers() {
+export default async function getUserList() {
   try {
     // Fetch current user
+
     const currentUser = await getCurrentUser();
-    
+        
     if (!currentUser) {
-      throw new Error('User not authenticated');
+      return null; 
     }
 
     const users = await prisma.user.findMany({

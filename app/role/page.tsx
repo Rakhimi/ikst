@@ -1,12 +1,16 @@
 import MaxWidthWrapper from '@/components/MaxWidthWrapper'
 import React from 'react'
-import getUsers from '../actions/getUsers'
+import getUserList from '../actions/getUsers'
 import Role from './Role'
 
 
 const Page: React.FC = async () => {
 
-    const users = await getUsers();
+    const users = await getUserList();
+
+    if (!users) {
+      return <div>No users</div>;
+    }
 
   return (
     <div>
@@ -17,4 +21,4 @@ const Page: React.FC = async () => {
   )
 }
 
-export default Page;
+export default Page
