@@ -41,10 +41,9 @@ interface QuestionSet {
 interface QuestionsReviewProps {
   questionSet: QuestionSet[] | QuestionSet | null;
   id :number;
-  completed: boolean;
 }
 
-const QuestionsReview: React.FC<QuestionsReviewProps> = ({ questionSet, id, completed }) => {
+const QuestionsReview: React.FC<QuestionsReviewProps> = ({ questionSet, id }) => {
   const router = useRouter();
 
   // Handle null case
@@ -66,9 +65,7 @@ const QuestionsReview: React.FC<QuestionsReviewProps> = ({ questionSet, id, comp
 
   // Navigate to edit mode with initial data
   const navigateToEdit = () => {
-    if (!completed) {
       router.push(`/questions/${id}`);
-    }
   };
 
   return (
@@ -79,8 +76,8 @@ const QuestionsReview: React.FC<QuestionsReviewProps> = ({ questionSet, id, comp
         <h2 className='text-2xl font-semibold'>{grade}</h2>
         <h3 className='text-2xl font-semibold'>{type}</h3>
         </div>
-        <Button onClick={navigateToEdit} disabled={completed}>
-          {completed ? 'Completed' : 'Edit'}
+        <Button onClick={navigateToEdit}>
+          Edit
         </Button>
       </div>
       {questions.map((question) => (

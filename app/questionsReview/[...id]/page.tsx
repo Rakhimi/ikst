@@ -9,6 +9,8 @@ const page = async ({ params }: { params: { id: [number, boolean] }}) => {
   
   const [id, completed] = params.id;
 
+  console.log(completed)
+
   const questionSet = await getQuestions(Number(id));
 
   
@@ -16,7 +18,7 @@ const page = async ({ params }: { params: { id: [number, boolean] }}) => {
   return (
     <div>
         <MaxWidthWrapper>
-          <QuestionsReview questionSet={questionSet} id={id} completed={completed}/>
+          <QuestionsReview questionSet={questionSet} id={id} />
         </MaxWidthWrapper>
     </div>
   )
